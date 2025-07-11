@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaikh Digital - Bill</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="header-title">Shaikh Digital - Bill Generator</div>
+  </header>
+  <div class="container">
+    <label for="date">Date:</label>
+    <input type="date" id="date">
+    <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerName" placeholder="Enter customer name">
+    <label for="customerCity">Customer City:</label>
+    <input type="text" id="customerCity" placeholder="Enter city">
+    
+    <div class="result-box" id="billData">Generating bill...</div>
+
+    <button class="btn" onclick="printBill()">Print</button>
+    <button class="btn" onclick="downloadPDF()">Download PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="bill.js"></script>
+</body>
+</html>

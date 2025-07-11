@@ -3,42 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shaikh Digital - Banner Calculator</title>
+  <title>Banner Calculator - Shaikh Digital</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Shaikh Digital Logo" class="logo">
-    <div class="header-title">Shaikh Digital</div>
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="header-title">Shaikh Digital - Banner Calculator</div>
   </header>
   <div class="container">
-    <label for="date">Date:</label>
-    <input type="date" id="date">
-    <label for="customerName">Customer Name:</label>
-    <input type="text" id="customerName" placeholder="Enter customer name">
-    <label for="customerCity">Customer City:</label>
-    <input type="text" id="customerCity" placeholder="Enter city">
-    <label for="unit">Select Unit:</label>
+    <label for="unit">Unit:</label>
     <select id="unit">
       <option value="feet">Feet</option>
       <option value="inch">Inch</option>
     </select>
-    <label for="height">Enter Height:</label>
-    <input type="number" id="height" placeholder="e.g., 3" min="0">
-    <label for="width">Enter Width:</label>
-    <input type="number" id="width" placeholder="e.g., 4" min="0">
-    <label for="rate">Rate per sq. ft (₹):</label>
-    <input type="number" id="rate" placeholder="e.g., 30" min="0">
-    <div class="result-box" id="result">Enter the values above to calculate.</div>
-    <button class="bill-btn" onclick="generateBill()">Generate Bill</button>
-    <button class="bill-btn" onclick="printBill()">Print</button>
-    <button class="bill-btn" onclick="downloadPDF()">Download PDF</button>
-    <div class="bill-section" id="billSection">
-      <h3>Bill - Shaikh Digital</h3>
-      <p id="billContent"></p>
-    </div>
+
+    <label for="height">Height:</label>
+    <input type="number" id="height" placeholder="Enter height" />
+
+    <label for="width">Width:</label>
+    <input type="number" id="width" placeholder="Enter width" />
+
+    <label for="type">Banner Type:</label>
+    <select id="type">
+      <option value="vinyl">Vinyl (₹35/sq.ft)</option>
+      <option value="flex">Flex (₹25/sq.ft)</option>
+      <option value="glow">Glow Sign (₹45/sq.ft)</option>
+    </select>
+
+    <div class="result-box" id="result">Enter values to calculate...</div>
+
+    <button class="btn" onclick="saveAndGo()">Generate Bill</button>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="script.js"></script>
+
+  <script src="calculator.js"></script>
 </body>
 </html>

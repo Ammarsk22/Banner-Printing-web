@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bill History - Shaikh Digital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="header-title">Shaikh Digital - Bill History</div>
+  </header>
+  <div class="container">
+    <div id="historyList">Loading bill history...</div>
+    <button class="btn" onclick="clearHistory()">Clear History</button>
+  </div>
+
+  <script>
+    function loadHistory() {
+      const list = JSON.parse(localStorage.getItem("billHistory") || "[]");
+      const container = document.getElementById("historyList");
+      if (list.length === 0) {
+        container.innerHTML = "<p>No bill history found.</p>";
+        return;
+      }
+      let html = "<ul>";
+      list.forEach((bill, i) => {
+        html += `<li><strong>#${bill.billNo}</strong> - ${bill.name} (${bill.city}) | ₹${bill.total.toFixed(2)} | ${bill.date}</li>`;
+      });
+      html += "</ul>";
+      container.innerHTML = html;
+    }
+
+    function clearHistory() {
+      if (confirm("Are you sure you want to clear all bill history?")) {
+        localStorage.removeItem("billHistory");
+        loadHistory();
+      }
+    }
+
+    loadHistory();
+  </script>
+</body>
+</html>
