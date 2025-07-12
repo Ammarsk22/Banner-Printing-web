@@ -1,50 +1,59 @@
-function saveAndGo() {
-  const unit = document.getElementById("unit").value;
-  const height = parseFloat(document.getElementById("height").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const type = document.getElementById("type").value;
 
-  if (isNaN(height) || isNaN(width)) {
-    alert("Please enter height and width.");
-    return;
-  }
-
-  const rateMap = { vinyl: 35, flex: 25, glow: 45 };
-  const rate = rateMap[type];
-
-  const h = unit === "inch" ? height / 12 : height;
-  const w = unit === "inch" ? width / 12 : width;
-  const area = h * w;
-  const total = area * rate;
-
-  // Save in localStorage
-  localStorage.setItem("billData", JSON.stringify({ unit, height, width, h, w, area, rate, type, total }));
-
-  window.location.href = "bill.html";
+function addBannerRow() {
+  const container = document.getElementById("bannerList");
+  const row = document.createElement("div");
+  row.className = "bannerRow";
+  row.innerHTML = `
+    <input type="number" placeholder="Height (ft)" class="height" required>
+    <input type="number" placeholder="Width (ft)" class="width" required>
+    <input type="number" placeholder="Rate ₹/sq.ft" class="rate" required>
+    <input type="number" placeholder="Quantity" class="quantity" value="1" min="1" required>
+  `;
+  container.appendChild(row);
 }
 
-document.getElementById("height").addEventListener("input", liveCalc);
-document.getElementById("width").addEventListener("input", liveCalc);
-document.getElementById("unit").addEventListener("change", liveCalc);
-document.getElementById("type").addEventListener("change", liveCalc);
+function toggleBond() {
+  document.getElementById("bondQty").style.display =
+    document.getElementById("bondingCheck").checked ? "inline-block" : "none";
+}
 
-function liveCalc() {
-  const unit = document.getElementById("unit").value;
-  const height = parseFloat(document.getElementById("height").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const type = document.getElementById("type").value;
+document.getElementById("bannerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  let total = 0;
+  const banners = document.querySelectorAll(".bannerRow");
+  banners.forEach((row) => {
+    const h = parseFloat(row.querySelector(".height").value);
+    const w = parseFloat(row.querySelector(".width").value);
+    const r = parseFloat(row.querySelector(".rate").value);
+    const q = parseInt(row.querySelector(".quantity").value);
+    const area = h * w;
+    total += area * r * q;
+  });
 
-  if (isNaN(height) || isNaN(width)) {
-    document.getElementById("result").textContent = "Enter values to calculate...";
-    return;
+  if (document.getElementById("bondingCheck").checked) {
+    const bq = parseInt(document.getElementById("bondQty").value || "0");
+    const bondRate = 50;
+    total += bq * bondRate;
   }
 
-  const rateMap = { vinyl: 35, flex: 25, glow: 45 };
-  const rate = rateMap[type];
-  const h = unit === "inch" ? height / 12 : height;
-  const w = unit === "inch" ? width / 12 : width;
-  const area = h * w;
-  const total = area * rate;
+  document.getElementById("totalAmount").innerHTML = "<h2>Total: ₹" + total.toFixed(2) + "</h2>";
 
-  document.getElementById("result").innerHTML = `Area: <b>${area.toFixed(2)} sq.ft</b><br>Total: ₹${total.toFixed(2)} (${type})`;
+  const billData = {
+    banners: Array.from(banners).map((row) => ({
+      height: parseFloat(row.querySelector(".height").value),
+      width: parseFloat(row.querySelector(".width").value),
+      rate: parseFloat(row.querySelector(".rate").value),
+      quantity: parseInt(row.querySelector(".quantity").value),
+    })),
+    bondQty: document.getElementById("bondingCheck").checked
+      ? parseInt(document.getElementById("bondQty").value || "0")
+      : 0,
+    bondRate: 50,
+    total: total
+  };
+  localStorage.setItem("billData", JSON.stringify(billData));
+});
+
+function saveAndNext() {
+  window.location.href = "bill.html";
 }

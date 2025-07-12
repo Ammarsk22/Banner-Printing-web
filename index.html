@@ -1,41 +1,38 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Banner Calculator - Shaikh Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shaikh Digital - Banner Calculator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo" class="logo">
-    <div class="header-title">Shaikh Digital - Banner Calculator</div>
+    <img src="logo.png" alt="Shaikh Digital" class="logo">
+    <h1>Shaikh Digital</h1>
+    <p>Banner Rate & Billing Calculator</p>
   </header>
   <div class="container">
-    <label for="unit">Unit:</label>
-    <select id="unit">
-      <option value="feet">Feet</option>
-      <option value="inch">Inch</option>
-    </select>
-
-    <label for="height">Height:</label>
-    <input type="number" id="height" placeholder="Enter height" />
-
-    <label for="width">Width:</label>
-    <input type="number" id="width" placeholder="Enter width" />
-
-    <label for="type">Banner Type:</label>
-    <select id="type">
-      <option value="vinyl">Vinyl (₹35/sq.ft)</option>
-      <option value="flex">Flex (₹25/sq.ft)</option>
-      <option value="glow">Glow Sign (₹45/sq.ft)</option>
-    </select>
-
-    <div class="result-box" id="result">Enter values to calculate...</div>
-
-    <button class="btn" onclick="saveAndGo()">Generate Bill</button>
+    <form id="bannerForm">
+      <div id="bannerList">
+        <div class="bannerRow">
+          <input type="number" placeholder="Height (ft)" class="height" required>
+          <input type="number" placeholder="Width (ft)" class="width" required>
+          <input type="number" placeholder="Rate ₹/sq.ft" class="rate" required>
+          <input type="number" placeholder="Quantity" class="quantity" value="1" min="1" required>
+        </div>
+      </div>
+      <button type="button" onclick="addBannerRow()">+ Add Banner</button>
+      <br><br>
+      <label><input type="checkbox" id="bondingCheck" onchange="toggleBond()"> Bonding Required?</label>
+      <input type="number" id="bondQty" placeholder="Bond Quantity" style="display:none;">
+      <br><br>
+      <button type="submit" class="btn-calc">Calculate Total</button>
+    </form>
+    <div id="totalAmount"></div>
+    <button onclick="saveAndNext()" class="btn-next">Generate Bill</button>
   </div>
-
   <script src="calculator.js"></script>
 </body>
 </html>
