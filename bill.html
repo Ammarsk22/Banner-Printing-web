@@ -1,1 +1,53 @@
-<html><body><h1>Bill Page</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shaikh Digital - Bill</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bill" id="billContent">
+    <div class="bill-header">
+      <img src="logo.png" class="logo" alt="Logo" style="height: 60px;"><br/>
+      <h2>Shaikh Digital & Redium</h2>
+      <p>Near Patan Chowfuli, Shindkheda, Dist - Dhule (Maharashtra)</p>
+      <p>Email: shaikhdigital1@gmail.com</p>
+      <p>Owner: Vajid Shaikh - 9423494985 | Maksud Shaikh - 9158074459</p>
+    </div>
+
+    <div class="bill-body">
+      <p><strong>Bill No:</strong> <span id="billNo"></span></p>
+      <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
+      <p><strong>City:</strong> <span id="customerCity"></span></p>
+      <p><strong>Date:</strong> <span id="billDate"></span></p>
+
+      <table class="bill-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Banner Name</th>
+            <th>Size (HxW)</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Sq.Ft</th>
+            <th>Amount (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="bannerRows"></tbody>
+      </table>
+
+      <p><strong>Bond Quantity:</strong> <span id="bondQty"></span> × ₹50</p>
+      <p><strong>Grand Total:</strong> ₹<span id="totalAmount"></span></p>
+    </div>
+
+    <div class="bill-footer">
+      <button onclick="window.print()">🖨️ Print</button>
+      <button onclick="downloadPDF()">📄 Download PDF</button>
+      <button onclick="window.location.href='index.html'">🔙 Back</button>
+    </div>
+  </div>
+
+  <script src="bill.js"></script>
+</body>
+</html>

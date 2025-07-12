@@ -1,58 +1,166 @@
-
-body {
-  font-family: 'Segoe UI', sans-serif;
+/* General Reset */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background: #f7f7f7;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #f3f4f6;
+  padding: 20px;
   color: #333;
 }
+
+/* Header Section */
 header {
-  background: #24292e;
-  color: white;
-  padding: 20px;
   text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.logo {
-  height: 60px;
+
+header .logo {
+  max-height: 60px;
   margin-bottom: 10px;
 }
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  background: white;
-  margin-top: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+header h1 {
+  font-size: 28px;
+  color: #2c3e50;
 }
+
+header p {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0;
+}
+
+/* Form & Layout */
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
 .bannerRow {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 10px;
-  flex-wrap: wrap;
 }
-.bannerRow input {
-  flex: 1 1 45%;
-  padding: 8px;
-}
-input[type="number"], input[type="text"], input[type="date"] {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+
 button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background: #0056b3;
-}
-#totalAmount {
   margin-top: 15px;
-  font-size: 1.2em;
+  padding: 10px 20px;
+  border: none;
+  background: #0077cc;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+.btn-calc {
+  background-color: #27ae60;
+}
+.btn-calc:hover {
+  background-color: #1e874b;
+}
+
+.btn-next {
+  background-color: #f39c12;
+}
+.btn-next:hover {
+  background-color: #d68910;
+}
+
+/* Output */
+#totalAmount {
+  font-size: 20px;
+  margin-top: 15px;
   font-weight: bold;
-  color: green;
+  color: #222;
+  text-align: center;
+}
+
+/* Bill layout (bill.html) */
+.bill {
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 20px auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.bill h2 {
+  margin-bottom: 10px;
+}
+
+.bill-header, .bill-footer {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.bill-table th, .bill-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.bill-table th {
+  background: #f8f8f8;
+}
+
+.bill-footer p {
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .bannerRow {
+    grid-template-columns: 1fr;
+  }
+
+  header h1 {
+    font-size: 22px;
+  }
+
+  .bill-table {
+    font-size: 13px;
+  }
 }

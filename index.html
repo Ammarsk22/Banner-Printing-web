@@ -1,38 +1,56 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Banner Printing Calculator - Shaikh Digital</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shaikh Digital - Banner Calculator</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Shaikh Digital" class="logo">
-    <h1>Shaikh Digital</h1>
-    <p>Banner Rate & Billing Calculator</p>
-  </header>
   <div class="container">
-    <form id="bannerForm">
-      <div id="bannerList">
-        <div class="bannerRow">
-          <input type="number" placeholder="Height (ft)" class="height" required>
-          <input type="number" placeholder="Width (ft)" class="width" required>
-          <input type="number" placeholder="Rate ₹/sq.ft" class="rate" required>
-          <input type="number" placeholder="Quantity" class="quantity" value="1" min="1" required>
-        </div>
-      </div>
-      <button type="button" onclick="addBannerRow()">+ Add Banner</button>
+    <h2>Banner Printing Calculator - Shaikh Digital</h2>
+
+    <form id="calcForm" onsubmit="calculateAndSave(); return false;">
+      <label>Customer Name (Optional):
+        <input type="text" id="customerName" placeholder="e.g. Vajid Shaikh" oninput="updatePreview()">
+      </label>
+
+      <label>City (Optional):
+        <input type="text" id="customerCity" placeholder="e.g. Shindkheda" oninput="updatePreview()">
+      </label>
+
+      <label>Date:
+        <input type="date" id="billDate" oninput="updatePreview()">
+      </label>
+
       <br><br>
-      <label><input type="checkbox" id="bondingCheck" onchange="toggleBond()"> Bonding Required?</label>
-      <input type="number" id="bondQty" placeholder="Bond Quantity" style="display:none;">
+      <div id="bannersArea"></div>
+      <button type="button" onclick="addBannerRow()">➕ Add Banner</button>
+
       <br><br>
-      <button type="submit" class="btn-calc">Calculate Total</button>
+      <label>
+        <input type="checkbox" id="bondingCheckbox" onchange="toggleBondInput()"> Add Bonding
+      </label>
+      <input type="number" id="bondQty" placeholder="Bond Quantity" style="display:none;" min="0" oninput="updatePreview()">
+
+      <label>
+        <input type="checkbox" id="isPending" onchange="togglePendingInput()"> Mark Pending
+      </label>
+      <input type="number" id="pendingAmt" placeholder="Enter Pending Amount" style="display:none;" min="0" oninput="updatePreview()">
+
+      <br><br>
+
+      <!-- 🔴 Live Preview Section -->
+      <div id="livePreview" class="previewBox"></div>
+
+      <br>
+      <button type="submit">🧾 Generate Bill</button>
     </form>
-    <div id="totalAmount"></div>
-    <button onclick="saveAndNext()" class="btn-next">Generate Bill</button>
+
+    <br>
+    <button onclick="window.location.href='history.html'">📄 View Bill History</button>
   </div>
+
   <script src="calculator.js"></script>
 </body>
 </html>

@@ -1,1 +1,65 @@
-<html><body><h1>History Page</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bill History - Shaikh Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>🧾 Bill History - Shaikh Digital</h2>
+    <table class="bill-table" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>Bill #</th>
+          <th>Customer</th>
+          <th>Total (₹)</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+
+    <br/>
+    <button onclick="window.location.href='index.html'">🔙 Back to Calculator</button>
+  </div>
+
+  <script>
+    const history = JSON.parse(localStorage.getItem("billHistory")) || [];
+    const tbody = document.getElementById("historyBody");
+
+    history.forEach(bill => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>#${bill.billNo}</td>
+        <td>${bill.customerName}</td>
+        <td>₹${bill.total}</td>
+        <td>${bill.date}</td>
+        <td>
+          <button onclick="viewBill(${bill.billNo})">View</button>
+          <button onclick="deleteBill(${bill.billNo})" style="color:red;">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    function viewBill(billNo) {
+      const history = JSON.parse(localStorage.getItem("billHistory")) || [];
+      const bill = history.find(b => b.billNo === billNo);
+      if (bill) {
+        localStorage.setItem("lastBill", JSON.stringify(bill));
+        window.location.href = "bill.html";
+      }
+    }
+
+    function deleteBill(billNo) {
+      let history = JSON.parse(localStorage.getItem("billHistory")) || [];
+      history = history.filter(b => b.billNo !== billNo);
+      localStorage.setItem("billHistory", JSON.stringify(history));
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
