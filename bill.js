@@ -1,39 +1,74 @@
-// Load last bill from localStorage
-const bill = JSON.parse(localStorage.getItem("lastBill"));
+// In-memory storage
+let sessionData = {
+  latestBill: null
+};
 
-document.getElementById("billNo").innerText = bill.billNo;
-document.getElementById("customerName").innerText = bill.customerName;
-document.getElementById("customerCity").innerText = bill.city;
-document.getElementById("billDate").innerText = bill.date;
-document.getElementById("totalAmount").innerText = bill.total;
-document.getElementById("bondQty").innerText = bill.bondQty;
+// Load bill from localStorage
+function loadLatestBill() {
+  try {
+    const stored = localStorage.getItem("latestBill");
+    if (stored) {
+      sessionData.latestBill = JSON.parse(stored);
+    }
+  } catch (e) {
+    console.log("No latest bill found");
+  }
+}
 
-// Banner rows
-const tableBody = document.getElementById("bannerRows");
+window.onload = function () {
+  loadLatestBill();
+  const data = sessionData.latestBill;
+  if (!data) {
+    alert("No bill data found! Redirecting...");
+    window.location.href = "index.html";
+    return;
+  }
 
-bill.banners.forEach((b, i) => {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${i + 1}</td>
-    <td>${b.name || "-"}</td>
-    <td>${b.h} × ${b.w}</td>
-    <td>${b.qty}</td>
-    <td>₹${b.rate}</td>
-    <td>${(b.sqFt).toFixed(2)}</td>
-    <td>₹${(b.price).toFixed(2)}</td>
-  `;
-  tableBody.appendChild(tr);
-});
+  document.getElementById("billNo").textContent = data.billNo || "-";
+  document.getElementById("billDate").textContent = data.date || "-";
+  document.getElementById("customerName").textContent = data.customerName || "-";
+  document.getElementById("customerCity").textContent = data.customerCity || "-";
+  document.getElementById("bannerTitle").textContent = data.bannerTitle || "-";
 
-// PDF download
+  const tbody = document.getElementById("bannerTableBody");
+  tbody.innerHTML = "";
+  let grandTotal = 0;
+
+  data.banners.forEach((banner, index) => {
+    const height = parseFloat(banner.height || 0);
+    const width = parseFloat(banner.width || 0);
+    const qty = parseInt(banner.qty || 1);
+    const rate = parseFloat(banner.rate || 0);
+    const bondQty = parseInt(banner.bondQty || 0);
+
+    const size = `${height}×${width} ft`;
+    const bannerCost = height * width * rate * qty;
+    const bondCost = bondQty * 50;
+    const total = bannerCost + bondCost;
+    grandTotal += total;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${banner.name || "Banner"}</td>
+      <td>${size}</td>
+      <td>${qty}</td>
+      <td>₹${rate.toFixed(2)}</td>
+      <td>${bondQty}</td>
+      <td>₹${total.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("totalAmount").textContent = grandTotal.toFixed(2);
+
+  if (data.isPending && parseFloat(data.pendingAmount) > 0) {
+    document.getElementById("pendingAmountText").style.display = "block";
+    document.getElementById("pendingAmount").textContent = parseFloat(data.pendingAmount).toFixed(2);
+  }
+};
+
 function downloadPDF() {
-  const element = document.getElementById("billContent");
-  const opt = {
-    margin: 0.5,
-    filename: `ShaikhDigital_Bill_${bill.billNo}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(element).save();
+  alert("🛠 PDF download feature coming soon! Use Print for now.");
+  window.print();
 }

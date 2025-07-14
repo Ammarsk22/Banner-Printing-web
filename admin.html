@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Shaikh Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container" id="loginBox">
+    <h2>🔐 Admin Login</h2>
+    <input type="password" id="adminPass" placeholder="Enter Password" />
+    <button onclick="checkLogin()">Login</button>
+    <p id="loginError" style="color: red; display: none;">Incorrect password</p>
+  </div>
+
+  <div class="container" id="adminPanel" style="display: none;">
+    <h2>⚙️ Manage Banner Types & Rates</h2>
+    <div id="presetForm">
+      <div class="preset-row">
+        <input type="text" id="vinylName" placeholder="Vinyl name" />
+        <input type="number" id="vinylRate" placeholder="Rate ₹" />
+      </div>
+      <div class="preset-row">
+        <input type="text" id="flexName" placeholder="Flex name" />
+        <input type="number" id="flexRate" placeholder="Rate ₹" />
+      </div>
+      <div class="preset-row">
+        <input type="text" id="glowName" placeholder="Glow Sign name" />
+        <input type="number" id="glowRate" placeholder="Rate ₹" />
+      </div>
+    </div>
+    <button onclick="savePresets()">💾 Save Presets</button>
+    <button onclick="window.location.href='index.html'" style="margin-left: 10px;">🔙 Back to Home</button>
+  </div>
+
+  <script>
+    const password = "Shaikh@2012";
+
+    // In-memory storage for admin session
+    let adminData = {
+      presetRates: {
+        "Vinyl": 40,
+        "Flex": 30,
+        "Glow Sign": 50
+      }
+    };
+
+    // Initialize data from localStorage if available
+    function initializeAdminData() {
+      try {
+        const stored = localStorage.getItem("presetRates");
+        if (stored) {
+          adminData.presetRates = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.log("Using default preset rates");
+      }
+    }
+
+    // Save to localStorage
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem("presetRates", JSON.stringify(adminData.presetRates));
+      } catch (e) {
+        console.log("LocalStorage not available");
+      }
+    }
+
+    function checkLogin() {
+      const input = document.getElementById("adminPass").value;
+      if (input === password) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPresets();
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    }
+
+    function loadPresets() {
+      initializeAdminData();
+      const data = adminData.presetRates;
+      const keys = Object.keys(data);
+
+      document.getElementById("vinylName").value = keys[0] || "Vinyl";
+      document.getElementById("vinylRate").value = data[keys[0]] || 40;
+
+      document.getElementById("flexName").value = keys[1] || "Flex";
+      document.getElementById("flexRate").value = data[keys[1]] || 30;
+
+      document.getElementById("glowName").value = keys[2] || "Glow Sign";
+      document.getElementById("glowRate").value = data[keys[2]] || 50;
+    }
+
+    function savePresets() {
+      const vinylName = document.getElementById("vinylName").value.trim() || "Vinyl";
+      const vinylRate = parseFloat(document.getElementById("vinylRate").value) || 40;
+
+      const flexName = document.getElementById("flexName").value.trim() || "Flex";
+      const flexRate = parseFloat(document.getElementById("flexRate").value) || 30;
+
+      const glowName = document.getElementById("glowName").value.trim() || "Glow Sign";
+      const glowRate = parseFloat(document.getElementById("glowRate").value) || 50;
+
+      adminData.presetRates = {};
+      adminData.presetRates[vinylName] = vinylRate;
+      adminData.presetRates[flexName] = flexRate;
+      adminData.presetRates[glowName] = glowRate;
+
+      saveToLocalStorage();
+      alert("✅ Presets saved successfully! Please refresh the main page to see changes.");
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', function() {
+      initializeAdminData();
+    });
+  </script>
+</body>
+</html>

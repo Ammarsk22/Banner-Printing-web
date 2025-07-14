@@ -2,55 +2,680 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Banner Printing Calculator - Shaikh Digital</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+  <title>Shaikh Digital - Banner Calculator</title>
+  <style>
+    /* General Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .menu {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger:hover {
+      background: #e9ecef;
+      transform: scale(1.1);
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+      min-width: 160px;
+    }
+
+    .dropdown.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #f1f1f1;
+      transition: background 0.3s ease;
+    }
+
+    .dropdown a:hover {
+      background: #f8f9fa;
+    }
+
+    .dropdown a:last-child {
+      border-bottom: none;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+      border-radius: 50%;
+      border: 3px solid #667eea;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    header h1 {
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #666;
+      margin: 4px 0;
+    }
+
+    /* Container */
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* Banner Row */
+    .bannerRow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
+    }
+
+    .bannerRow input, .bannerRow select {
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .bannerRow input:focus, .bannerRow select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 8px 8px 8px 0;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    /* Total Amount */
+    #totalAmount {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Pending Amount */
+    #pendingAmountBox {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    #pendingAmountBox label {
+      color: #856404;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .bannerRow {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 20px;
+      }
+      
+      header h1 {
+        font-size: 24px;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Banner Printing Calculator - Shaikh Digital</h2>
 
-    <form id="calcForm" onsubmit="calculateAndSave(); return false;">
-      <label>Customer Name (Optional):
-        <input type="text" id="customerName" placeholder="e.g. Vajid Shaikh" oninput="updatePreview()">
-      </label>
-
-      <label>City (Optional):
-        <input type="text" id="customerCity" placeholder="e.g. Shindkheda" oninput="updatePreview()">
-      </label>
-
-      <label>Date:
-        <input type="date" id="billDate" oninput="updatePreview()">
-      </label>
-
-      <br><br>
-      <div id="bannersArea"></div>
-      <button type="button" onclick="addBannerRow()">➕ Add Banner</button>
-
-      <br><br>
-      <label>
-        <input type="checkbox" id="bondingCheckbox" onchange="toggleBondInput()"> Add Bonding
-      </label>
-      <input type="number" id="bondQty" placeholder="Bond Quantity" style="display:none;" min="0" oninput="updatePreview()">
-
-      <label>
-        <input type="checkbox" id="isPending" onchange="togglePendingInput()"> Mark Pending
-      </label>
-      <input type="number" id="pendingAmt" placeholder="Enter Pending Amount" style="display:none;" min="0" oninput="updatePreview()">
-
-      <br><br>
-
-      <!-- 🔴 Live Preview Section -->
-      <div id="livePreview" class="previewBox"></div>
-
-      <br>
-      <button type="submit">🧾 Generate Bill</button>
-    </form>
-
-    <br>
-    <button onclick="window.location.href='history.html'">📄 View Bill History</button>
+<header>
+  <div class="menu">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="dropdown" id="dropdownMenu">
+      <a href="admin.html">🔧 Admin Panel</a>
+      <a href="history.html">📋 Bill History</a>
+      <a href="#" onclick="showHelp()">❓ Help</a>
+    </div>
   </div>
+  
+  <div class="logo">SK</div>
+  <h1>Shaikh Digital & Redium</h1>
+  <p>Near Patan Chowfuli, Shindkheda, Dist - Dhule (MH)</p>
+  <p>📧 shaikhdigital1@gmail.com</p>
+  <p>📞 Vajid Shaikh – 9423494985 | Maksud Shaikh – 9158074459</p>
+</header>
 
-  <script src="calculator.js"></script>
+<div class="container">
+  <form id="calcForm">
+    <div class="form-group">
+      <label for="customerName">Customer Name *</label>
+      <input type="text" id="customerName" required />
+    </div>
+    
+    <div class="form-group">
+      <label for="customerCity">Customer City</label>
+      <input type="text" id="customerCity" />
+    </div>
+    
+    <div class="form-group">
+      <label for="billDate">Date</label>
+      <input type="date" id="billDate" />
+    </div>
+    
+    <div class="form-group">
+      <label for="bannerTitle">Banner Title (Optional)</label>
+      <input type="text" id="bannerTitle" />
+    </div>
+
+    <h3 style="margin: 20px 0;">Banner Details</h3>
+    <div id="bannerContainer">
+      <!-- Banners will be added here dynamically -->
+    </div>
+
+    <button type="button" class="btn btn-success" onclick="addBanner()">➕ Add Banner</button>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="isPending" onchange="togglePending()" style="margin-right: 8px;">
+        Is Payment Pending?
+      </label>
+    </div>
+    
+    <div id="pendingAmountBox" style="display: none;">
+      <label for="pendingAmount">Pending Amount (₹)</label>
+      <input type="number" id="pendingAmount" min="0" step="0.01" />
+    </div>
+
+    <div id="totalAmount">Total: ₹0.00</div>
+    
+    <div class="loading" id="loadingDiv">
+      <div class="spinner"></div>
+      <p>Generating Bill...</p>
+    </div>
+    
+    <button type="submit" class="btn btn-warning">📄 Generate Bill</button>
+  </form>
+</div>  
+
+<script>
+// In-memory storage for session data
+let sessionData = {
+  presetRates: {
+    "Flex": 30,
+    "Vinyl": 40,
+    "Glow Sign": 50
+  },
+  billHistory: [],
+  latestBill: null
+};
+
+// Initialize with localStorage data if available
+function initializeData() {
+  try {
+    const storedPresets = localStorage.getItem("presetRates");
+    if (storedPresets) {
+      sessionData.presetRates = JSON.parse(storedPresets);
+    }
+    
+    const storedHistory = localStorage.getItem("billHistory");
+    if (storedHistory) {
+      sessionData.billHistory = JSON.parse(storedHistory);
+    }
+  } catch (e) {
+    console.log("Using default data");
+  }
+}
+
+// Save data to localStorage
+function saveToLocalStorage() {
+  try {
+    localStorage.setItem("presetRates", JSON.stringify(sessionData.presetRates));
+    localStorage.setItem("billHistory", JSON.stringify(sessionData.billHistory));
+    if (sessionData.latestBill) {
+      localStorage.setItem("latestBill", JSON.stringify(sessionData.latestBill));
+    }
+  } catch (e) {
+    console.log("LocalStorage not available");
+  }
+}
+
+let bannerCount = 0;
+const bannerContainer = document.getElementById("bannerContainer");
+const totalAmountEl = document.getElementById("totalAmount");
+const billForm = document.getElementById("calcForm");
+
+// Load preset rates from session data
+function loadPresetRates() {
+  return sessionData.presetRates;
+}
+
+function createBannerRow() {
+  const row = document.createElement("div");
+  row.className = "bannerRow";
+  row.setAttribute("data-id", bannerCount);
+
+  // Get preset rates dynamically
+  const presets = loadPresetRates();
+  let optionsHtml = '<option value="">Select Type</option>';
+  
+  Object.entries(presets).forEach(([name, rate]) => {
+    optionsHtml += `<option value="${rate}">${name} – ₹${rate}</option>`;
+  });
+  optionsHtml += '<option value="custom">Custom</option>';
+
+  row.innerHTML = `
+    <input type="text" placeholder="Banner Name" class="banner-name" />
+    <input type="number" placeholder="Height (ft)" class="height" min="0" step="0.1" />
+    <input type="number" placeholder="Width (ft)" class="width" min="0" step="0.1" />
+    <input type="number" placeholder="Qty" class="quantity" value="1" min="1" />
+    <select class="rateSelect" onchange="handleRateChange(this)">
+      ${optionsHtml}
+    </select>
+    <input type="number" placeholder="Rate/sq.ft" class="rateInput" min="0" />
+    <label>
+      <input type="checkbox" class="bondCheckbox" onchange="toggleBondInput(this)"> Bond?
+    </label>
+    <input type="number" placeholder="Bond Qty" class="bondQty" style="display:none;" min="0" value="0" />
+    <button type="button" class="btn btn-danger" onclick="removeBanner(this)">❌</button>
+  `;
+
+  bannerContainer.appendChild(row);
+  bannerCount++;
+  attachInputListeners(row);
+}
+
+function addBanner() {
+  createBannerRow();
+  updateTotal();
+}
+
+function attachInputListeners(row) {
+  const inputs = row.querySelectorAll("input, select");
+  inputs.forEach(input => input.addEventListener("input", updateTotal));
+}
+
+function toggleBondInput(checkbox) {
+  const bondQtyInput = checkbox.parentElement.parentElement.querySelector(".bondQty");
+  bondQtyInput.style.display = checkbox.checked ? "block" : "none";
+  if (!checkbox.checked) {
+    bondQtyInput.value = 0;
+  }
+  updateTotal();
+}
+
+function handleRateChange(select) {
+  const row = select.closest(".bannerRow");
+  const rateInput = row.querySelector(".rateInput");
+  if (select.value === "custom") {
+    rateInput.value = "";
+    rateInput.disabled = false;
+    rateInput.focus();
+  } else if (select.value === "") {
+    rateInput.value = "";
+    rateInput.disabled = false;
+  } else {
+    rateInput.value = select.value;
+    rateInput.disabled = true;
+  }
+  updateTotal();
+}
+
+function removeBanner(button) {
+  const row = button.parentElement;
+  row.remove();
+  updateTotal();
+}
+
+function updateTotal() {
+  const rows = document.querySelectorAll(".bannerRow");
+  let total = 0;
+
+  rows.forEach(row => {
+    const height = parseFloat(row.querySelector(".height")?.value || 0);
+    const width = parseFloat(row.querySelector(".width")?.value || 0);
+    const quantity = parseInt(row.querySelector(".quantity")?.value || 1);
+    const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+    const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
+    
+    const sqFt = height * width;
+    const bannerTotal = sqFt * rate * quantity;
+    const bondCharge = bondQty * 50;
+    total += bannerTotal + bondCharge;
+  });
+
+  totalAmountEl.innerText = `Total: ₹${total.toFixed(2)}`;
+  return total;
+}
+
+function togglePending() {
+  const box = document.getElementById("pendingAmountBox");
+  const checkbox = document.getElementById("isPending");
+  box.style.display = checkbox.checked ? "block" : "none";
+  
+  if (!checkbox.checked) {
+    document.getElementById("pendingAmount").value = "";
+  }
+}
+
+function validateForm() {
+  const customerName = document.getElementById("customerName").value.trim();
+  const bannerRows = document.querySelectorAll(".bannerRow");
+  
+  if (!customerName) {
+    alert("Please enter customer name!");
+    return false;
+  }
+  
+  if (bannerRows.length === 0) {
+    alert("Please add at least one banner!");
+    return false;
+  }
+  
+  for (let row of bannerRows) {
+    const height = parseFloat(row.querySelector(".height")?.value || 0);
+    const width = parseFloat(row.querySelector(".width")?.value || 0);
+    const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+    
+    if (height <= 0 || width <= 0 || rate <= 0) {
+      alert("Please fill all banner details with valid values!");
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+billForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  if (!validateForm()) {
+    return;
+  }
+  
+  // Show loading
+  document.getElementById("loadingDiv").style.display = "block";
+  
+  setTimeout(() => {
+    const customerName = document.getElementById("customerName").value.trim();
+    const customerCity = document.getElementById("customerCity").value.trim() || "Not specified";
+    const date = document.getElementById("billDate").value || new Date().toISOString().slice(0,10);
+    const bannerTitle = document.getElementById("bannerTitle").value.trim();
+
+    const isPending = document.getElementById("isPending").checked;
+    const pendingAmount = isPending ? parseFloat(document.getElementById("pendingAmount").value || 0) : 0;
+
+    const banners = [];
+    let totalAmount = 0;
+
+    document.querySelectorAll(".bannerRow").forEach(row => {
+      const height = parseFloat(row.querySelector(".height")?.value || 0);
+      const width = parseFloat(row.querySelector(".width")?.value || 0);
+      const qty = parseInt(row.querySelector(".quantity")?.value || 1);
+      const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+      const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
+      const name = row.querySelector(".banner-name")?.value.trim() || "Banner";
+
+      const sqFt = height * width;
+      const bannerTotal = (sqFt * rate * qty) + (bondQty * 50);
+      totalAmount += bannerTotal;
+
+      banners.push({ 
+        name, 
+        height, 
+        width, 
+        qty, 
+        rate, 
+        bondQty
+      });
+    });
+
+    // Generate new bill number
+    const billNo = sessionData.billHistory.length > 0 ? 
+      Math.max(...sessionData.billHistory.map(b => b.billNo || 0)) + 1 : 100;
+
+    const billData = {
+      billNo,
+      customerName,
+      customerCity,
+      date,
+      bannerTitle,
+      banners,
+      totalAmount,
+      isPending,
+      pendingAmount
+    };
+
+    // Save to session data
+    sessionData.billHistory.push(billData);
+    sessionData.latestBill = billData;
+    
+    // Save to localStorage
+    saveToLocalStorage();
+
+    // Hide loading
+    document.getElementById("loadingDiv").style.display = "none";
+
+    // Show success message
+    alert("Bill generated successfully!");
+    
+    // Redirect to bill page
+    window.location.href = "bill.html";
+  }, 1000);
+});
+
+function toggleMenu() {
+  const dropdown = document.getElementById("dropdownMenu");
+  dropdown.classList.toggle("show");
+}
+
+function showHelp() {
+  alert(`Banner Calculator Help:
+
+1. Fill customer details
+2. Add banner details (height, width, quantity, rate)
+3. Select banner type from dropdown or enter custom rate
+4. Add bond quantity if needed (₹50 per bond)
+5. Mark as pending if payment is not complete
+6. Click Generate Bill to create bill
+
+For admin access, use the Admin Panel from the menu.`);
+}
+
+// Close dropdown when clicking outside
+window.addEventListener('click', function(event) {
+  const dropdown = document.getElementById("dropdownMenu");
+  const hamburger = document.querySelector('.hamburger');
+  
+  if (!hamburger.contains(event.target)) {
+    dropdown.classList.remove("show");
+  }
+});
+
+// Initialize on page load
+document.addEventListener("DOMContentLoaded", function() {
+  initializeData();
+  createBannerRow();
+  
+  // Auto-fill today's date if not set
+  const dateInput = document.getElementById("billDate");
+  if (!dateInput.value) {
+    dateInput.valueAsDate = new Date();
+  }
+});
+</script>
 </body>
 </html>

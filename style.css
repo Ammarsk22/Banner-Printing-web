@@ -12,7 +12,7 @@ body {
   color: #333;
 }
 
-/* Header Section */
+/* Header */
 header {
   text-align: center;
   margin-bottom: 20px;
@@ -23,34 +23,35 @@ header {
 }
 
 header .logo {
-  max-height: 60px;
-  margin-bottom: 10px;
+  max-height: 50px;
+  margin-bottom: 5px;
 }
 
 header h1 {
-  font-size: 28px;
+  font-size: 26px;
   color: #2c3e50;
 }
 
 header p {
-  font-size: 14px;
-  color: #555;
-  margin: 3px 0;
+  font-size: 13px;
+  color: #666;
 }
 
-/* Form & Layout */
+/* Container */
 .container {
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  max-width: 800px;
+  max-width: 850px;
   margin: auto;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
 }
 
+/* Form */
 form label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-weight: 500;
 }
 
@@ -59,11 +60,12 @@ form input[type="number"],
 form input[type="date"] {
   width: 100%;
   padding: 8px 10px;
-  margin-top: 4px;
+  margin-bottom: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
+/* Banner Row Grid */
 .bannerRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -71,16 +73,18 @@ form input[type="date"] {
   margin-bottom: 10px;
 }
 
+/* Buttons */
 button {
-  margin-top: 15px;
   padding: 10px 20px;
   border: none;
   background: #0077cc;
   color: white;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: 0.3s ease;
+  margin-right: 10px;
+  margin-top: 5px;
 }
 
 button:hover {
@@ -88,29 +92,58 @@ button:hover {
 }
 
 .btn-calc {
-  background-color: #27ae60;
+  background: #27ae60;
 }
 .btn-calc:hover {
-  background-color: #1e874b;
+  background: #1e874b;
 }
 
 .btn-next {
-  background-color: #f39c12;
+  background: #f39c12;
 }
 .btn-next:hover {
-  background-color: #d68910;
+  background: #d68910;
+}
+
+.btn-print {
+  background: #8e44ad;
+}
+.btn-print:hover {
+  background: #71368a;
 }
 
 /* Output */
 #totalAmount {
   font-size: 20px;
-  margin-top: 15px;
+  margin-top: 10px;
   font-weight: bold;
   color: #222;
   text-align: center;
 }
 
-/* Bill layout (bill.html) */
+/* Real-time Preview */
+.preview-container {
+  background: #fafafa;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.preview-container p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.preview-total {
+  font-weight: bold;
+  font-size: 18px;
+  color: #222;
+  margin-top: 5px;
+}
+
+/* Bill */
 .bill {
   padding: 20px;
   background: #fff;
@@ -126,41 +159,119 @@ button:hover {
 
 .bill-header, .bill-footer {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .bill-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .bill-table th, .bill-table td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: center;
+  font-size: 14px;
 }
 
 .bill-table th {
   background: #f8f8f8;
 }
 
-.bill-footer p {
-  font-weight: 500;
-  margin: 8px 0;
+/* History Cards */
+.history-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-/* Responsive Design */
+.history-card p {
+  margin: 2px 8px;
+  font-size: 14px;
+}
+
+.history-card button {
+  background-color: #3498db;
+  margin-left: 10px;
+}
+
+/* Admin Panel Styles */
+.preset-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.preset-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#adminPassword {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Menu (3-dot icon) */
+.menu-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.menu-options {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  display: none;
+  z-index: 999;
+}
+
+.menu-options a {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  padding: 5px;
+}
+
+.menu-options a:hover {
+  background: #f3f3f3;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
   .bannerRow {
     grid-template-columns: 1fr;
   }
 
-  header h1 {
-    font-size: 22px;
+  .bill-table {
+    font-size: 12px;
   }
 
-  .bill-table {
-    font-size: 13px;
+  .history-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-icon {
+    top: 10px;
+    right: 10px;
   }
 }

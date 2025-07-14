@@ -2,52 +2,317 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Shaikh Digital - Bill</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generated Bill - Shaikh Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .bill {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 900px;
+      margin: 20px auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .bill-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .bill-header h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .bill-header p {
+      color: #666;
+      margin: 5px 0;
+    }
+    
+    .bill-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .bill-info p {
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .bill-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .bill-table th {
+      background: #667eea;
+      color: white;
+      padding: 12px 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .bill-table td {
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .bill-table tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+    
+    .bill-footer {
+      text-align: right;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #667eea;
+    }
+    
+    .bill-footer p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    
+    .bill-actions {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .bill-actions button {
+      margin: 0 10px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-print {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-download {
+      background: #4ecdc4;
+      color: white;
+    }
+    
+    .btn-back {
+      background: #f39c12;
+      color: white;
+    }
+    
+    .btn-print:hover, .btn-download:hover, .btn-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    @media print {
+      .bill-actions {
+        display: none;
+      }
+      
+      .bill {
+        box-shadow: none;
+        margin: 0;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .bill {
+        padding: 20px;
+        margin: 10px;
+      }
+      
+      .bill-table {
+        font-size: 12px;
+      }
+      
+      .bill-table th, .bill-table td {
+        padding: 8px 4px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="bill" id="billContent">
+  <div class="bill">
     <div class="bill-header">
-      <img src="logo.png" class="logo" alt="Logo" style="height: 60px;"><br/>
+      <div style="font-size: 48px; color: #667eea; margin-bottom: 10px;">SK</div>
       <h2>Shaikh Digital & Redium</h2>
-      <p>Near Patan Chowfuli, Shindkheda, Dist - Dhule (Maharashtra)</p>
-      <p>Email: shaikhdigital1@gmail.com</p>
-      <p>Owner: Vajid Shaikh - 9423494985 | Maksud Shaikh - 9158074459</p>
+      <p>Near Patan Chowfuli, Shindkheda Dist - Dhule (MH)</p>
+      <p>📧 Email: shaikhdigital1@gmail.com</p>
+      <p>📞 Vajid Shaikh – 9423494985 | Maksud Shaikh – 9158074459</p>
     </div>
 
-    <div class="bill-body">
-      <p><strong>Bill No:</strong> <span id="billNo"></span></p>
-      <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
-      <p><strong>City:</strong> <span id="customerCity"></span></p>
-      <p><strong>Date:</strong> <span id="billDate"></span></p>
-
-      <table class="bill-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Banner Name</th>
-            <th>Size (HxW)</th>
-            <th>Qty</th>
-            <th>Rate</th>
-            <th>Sq.Ft</th>
-            <th>Amount (₹)</th>
-          </tr>
-        </thead>
-        <tbody id="bannerRows"></tbody>
-      </table>
-
-      <p><strong>Bond Quantity:</strong> <span id="bondQty"></span> × ₹50</p>
-      <p><strong>Grand Total:</strong> ₹<span id="totalAmount"></span></p>
+    <div class="bill-info">
+      <p><strong>Bill No:</strong> <span id="billNo">-</span></p>
+      <p><strong>Date:</strong> <span id="billDate">-</span></p>
+      <p><strong>Customer:</strong> <span id="customerName">-</span></p>
+      <p><strong>City:</strong> <span id="customerCity">-</span></p>
+      <p><strong>Banner Title:</strong> <span id="bannerTitle">-</span></p>
     </div>
+
+    <table class="bill-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Banner</th>
+          <th>Size (H×W)</th>
+          <th>Qty</th>
+          <th>Rate</th>
+          <th>Bond</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="bannerTableBody">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 20px;">Loading bill data...</td>
+        </tr>
+      </tbody>
+    </table>
 
     <div class="bill-footer">
-      <button onclick="window.print()">🖨️ Print</button>
-      <button onclick="downloadPDF()">📄 Download PDF</button>
-      <button onclick="window.location.href='index.html'">🔙 Back</button>
+      <p><strong>Total Amount: ₹<span id="totalAmount">0.00</span></strong></p>
+      <p id="pendingAmountText" style="display:none; color: #e74c3c;">
+        <strong>Pending: ₹<span id="pendingAmount">0.00</span></strong>
+      </p>
+    </div>
+
+    <div class="bill-actions">
+      <button class="btn-print" onclick="window.print()">🖨️ Print Bill</button>
+      <button class="btn-download" onclick="downloadPDF()">⬇️ Download PDF</button>
+      <button class="btn-back" onclick="window.location.href='index.html'">🔙 Back to Home</button>
     </div>
   </div>
 
-  <script src="bill.js"></script>
+  <script>
+    // In-memory storage for session data
+    let sessionData = {
+      latestBill: null
+    };
+
+    // Initialize data from localStorage if available
+    function initializeData() {
+      try {
+        const stored = localStorage.getItem("latestBill");
+        if (stored) {
+          sessionData.latestBill = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.log("No stored bill data found");
+      }
+    }
+
+    window.onload = function () {
+      initializeData();
+      
+      const data = sessionData.latestBill;
+      if (!data) {
+        alert("No bill data found! Redirecting to home page.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        // Fill bill details
+        document.getElementById("billNo").textContent = data.billNo || "N/A";
+        document.getElementById("billDate").textContent = data.date || "N/A";
+        document.getElementById("customerName").textContent = data.customerName || "N/A";
+        document.getElementById("customerCity").textContent = data.customerCity || "N/A";
+        document.getElementById("bannerTitle").textContent = data.bannerTitle || "N/A";
+
+        const tbody = document.getElementById("bannerTableBody");
+        tbody.innerHTML = ""; // Clear existing content
+        
+        let grandTotal = 0;
+
+        // Process each banner
+        if (data.banners && data.banners.length > 0) {
+          data.banners.forEach((banner, index) => {
+            const tr = document.createElement("tr");
+
+            const height = parseFloat(banner.height) || 0;
+            const width = parseFloat(banner.width) || 0;
+            const area = height * width;
+            const rate = parseFloat(banner.rate) || 0;
+            const qty = parseInt(banner.qty) || 1;
+            const bondQty = parseInt(banner.bondQty) || 0;
+            
+            // Calculate banner cost
+            const bannerCost = area * rate * qty;
+            const bondCost = bondQty * 50;
+            const totalCost = bannerCost + bondCost;
+            
+            grandTotal += totalCost;
+
+            tr.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${banner.name || "Banner"}</td>
+              <td>${height}×${width} ft</td>
+              <td>${qty}</td>
+              <td>₹${rate.toFixed(2)}</td>
+              <td>${bondQty}</td>
+              <td>₹${totalCost.toFixed(2)}</td>
+            `;
+
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No banner data found</td></tr>';
+        }
+
+        // Display total amount
+        document.getElementById("totalAmount").textContent = grandTotal.toFixed(2);
+
+        // Show pending amount if applicable
+        if (data.isPending && parseFloat(data.pendingAmount) > 0) {
+          document.getElementById("pendingAmount").textContent = parseFloat(data.pendingAmount).toFixed(2);
+          document.getElementById("pendingAmountText").style.display = "block";
+        } else {
+          document.getElementById("pendingAmountText").style.display = "none";
+        }
+
+      } catch (error) {
+        console.error("Error loading bill data:", error);
+        alert("Error loading bill data. Please try again.");
+        window.location.href = "index.html";
+      }
+    };
+
+    function downloadPDF() {
+      // For now, use print functionality
+      // In future, can integrate with jsPDF library
+      alert("PDF download feature will be available soon. Please use Print for now.");
+      window.print();
+    }
+
+    // Add print styles when printing
+    function preparePrint() {
+      document.body.classList.add('printing');
+    }
+
+    // Remove print styles after printing
+    window.addEventListener('afterprint', function() {
+      document.body.classList.remove('printing');
+    });
+
+    window.addEventListener('beforeprint', function() {
+      preparePrint();
+    });
+  </script>
 </body>
 </html>

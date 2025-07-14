@@ -1,127 +1,235 @@
 let bannerCount = 0;
+const bannerContainer = document.getElementById("bannerContainer");
+const totalAmountEl = document.getElementById("totalAmount");
+const billForm = document.getElementById("calcForm");
 
-document.getElementById("billDate").valueAsDate = new Date();
+// Load preset rates from localStorage
+function loadPresetRates() {
+  const presets = JSON.parse(localStorage.getItem("presetRates")) || {
+    "Flex": 30,
+    "Vinyl": 40,
+    "Glow Sign": 50
+  };
+  return presets;
+}
 
-window.onload = () => {
-  addBannerRow();
-};
+function createBannerRow() {
+  const row = document.createElement("div");
+  row.className = "bannerRow";
+  row.setAttribute("data-id", bannerCount);
 
-function addBannerRow() {
-  bannerCount++;
-  const div = document.createElement("div");
-  div.className = "bannerRow";
-  div.id = `banner-${bannerCount}`;
-  div.innerHTML = `
-    <input type="text" placeholder="Banner Name (optional)" class="bannerName" oninput="updatePreview()">
-    <input type="number" placeholder="Height (ft)" class="height" oninput="updatePreview()">
-    <input type="number" placeholder="Width (ft)" class="width" oninput="updatePreview()">
-    <input type="number" placeholder="Rate (₹/sq.ft)" class="rate" oninput="updatePreview()">
-    <input type="number" placeholder="Quantity" class="qty" value="1" min="1" oninput="updatePreview()">
-    <button type="button" onclick="removeBannerRow('${div.id}')">❌ Cancel</button>
+  // Get preset rates dynamically
+  const presets = loadPresetRates();
+  let optionsHtml = '<option value="">Select Type</option>';
+  
+  Object.entries(presets).forEach(([name, rate]) => {
+    optionsHtml += `<option value="${rate}">${name} – ₹${rate}</option>`;
+  });
+  optionsHtml += '<option value="custom">Custom</option>';
+
+  row.innerHTML = `
+    <input type="text" placeholder="Banner Name" class="banner-name" />
+    <input type="number" placeholder="Height (ft)" class="height" min="0" step="0.1" />
+    <input type="number" placeholder="Width (ft)" class="width" min="0" step="0.1" />
+    <input type="number" placeholder="Qty" class="quantity" value="1" min="1" />
+    <select class="rateSelect" onchange="handleRateChange(this)">
+      ${optionsHtml}
+    </select>
+    <input type="number" placeholder="Rate/sq.ft" class="rateInput" min="0" />
+    <label>
+      <input type="checkbox" class="bondCheckbox" onchange="toggleBondInput(this)"> Bond?
+    </label>
+    <input type="number" placeholder="Bond Qty" class="bondQty" style="display:none;" min="0" value="0" />
+    <button type="button" onclick="removeBanner(this)">❌</button>
   `;
-  document.getElementById("bannersArea").appendChild(div);
-  updatePreview();
+
+  bannerContainer.appendChild(row);
+  bannerCount++;
+  attachInputListeners(row);
 }
 
-function removeBannerRow(id) {
-  const div = document.getElementById(id);
-  if (div) div.remove();
-  updatePreview();
+// Missing addBanner function - FIX
+function addBanner() {
+  createBannerRow();
+  updateTotal();
 }
 
-function toggleBondInput() {
-  const bond = document.getElementById("bondingCheckbox").checked;
-  document.getElementById("bondQty").style.display = bond ? "block" : "none";
-  updatePreview();
+function attachInputListeners(row) {
+  const inputs = row.querySelectorAll("input, select");
+  inputs.forEach(input => input.addEventListener("input", updateTotal));
 }
 
-function togglePendingInput() {
-  const pending = document.getElementById("isPending").checked;
-  document.getElementById("pendingAmt").style.display = pending ? "block" : "none";
-  updatePreview();
-}
-
-function updatePreview() {
-  const preview = document.getElementById("livePreview");
-  let total = 0;
-  let html = "<h3>🧾 Bill Summary</h3><ul>";
-
-  document.querySelectorAll(".bannerRow").forEach(row => {
-    const name = row.querySelector(".bannerName").value || "Unnamed Banner";
-    const h = parseFloat(row.querySelector(".height").value) || 0;
-    const w = parseFloat(row.querySelector(".width").value) || 0;
-    const rate = parseFloat(row.querySelector(".rate").value) || 0;
-    const qty = parseInt(row.querySelector(".qty").value) || 1;
-
-    const sqft = h * w;
-    const amount = sqft * rate * qty;
-    total += amount;
-
-    html += `<li><strong>${name}</strong>: ${h}ft × ${w}ft × ₹${rate}/sq.ft × ${qty} = ₹${amount.toFixed(2)}</li>`;
-  });
-
-  const bondQty = document.getElementById("bondingCheckbox").checked
-    ? parseInt(document.getElementById("bondQty").value) || 0
-    : 0;
-  const bondAmount = bondQty * 50;
-  if (bondQty > 0) {
-    html += `<li><strong>Bonding</strong>: ₹50 × ${bondQty} = ₹${bondAmount.toFixed(2)}</li>`;
-    total += bondAmount;
+function toggleBondInput(checkbox) {
+  const bondQtyInput = checkbox.parentElement.parentElement.querySelector(".bondQty");
+  bondQtyInput.style.display = checkbox.checked ? "block" : "none";
+  if (!checkbox.checked) {
+    bondQtyInput.value = 0;
   }
-
-  html += `</ul><h2>Total Amount: ₹${total.toFixed(2)}</h2>`;
-  preview.innerHTML = html;
+  updateTotal();
 }
 
-function calculateAndSave() {
-  const banners = [];
+function handleRateChange(select) {
+  const row = select.closest(".bannerRow");
+  const rateInput = row.querySelector(".rateInput");
+  if (select.value === "custom") {
+    rateInput.value = "";
+    rateInput.disabled = false;
+    rateInput.focus();
+  } else if (select.value === "") {
+    rateInput.value = "";
+    rateInput.disabled = false;
+  } else {
+    rateInput.value = select.value;
+    rateInput.disabled = true;
+  }
+  updateTotal();
+}
+
+function removeBanner(button) {
+  const row = button.parentElement;
+  row.remove();
+  updateTotal();
+}
+
+function updateTotal() {
+  const rows = document.querySelectorAll(".bannerRow");
   let total = 0;
 
-  document.querySelectorAll(".bannerRow").forEach(row => {
-    const h = parseFloat(row.querySelector(".height").value) || 0;
-    const w = parseFloat(row.querySelector(".width").value) || 0;
-    const rate = parseFloat(row.querySelector(".rate").value) || 0;
-    const qty = parseInt(row.querySelector(".qty").value) || 1;
-    const name = row.querySelector(".bannerName").value;
-
-    const sqFt = h * w;
-    const price = sqFt * rate * qty;
-    total += price;
-
-    banners.push({ name, h, w, rate, qty, sqFt, price });
+  rows.forEach(row => {
+    const height = parseFloat(row.querySelector(".height")?.value || 0);
+    const width = parseFloat(row.querySelector(".width")?.value || 0);
+    const quantity = parseInt(row.querySelector(".quantity")?.value || 1);
+    const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+    const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
+    
+    const sqFt = height * width;
+    const bannerTotal = sqFt * rate * quantity;
+    const bondCharge = bondQty * 50; // ₹50 per bond
+    total += bannerTotal + bondCharge;
   });
 
-  const bondQty = document.getElementById("bondingCheckbox").checked
-    ? parseInt(document.getElementById("bondQty").value) || 0
-    : 0;
-  const bondAmount = bondQty * 50;
-  total += bondAmount;
+  totalAmountEl.innerText = `Total: ₹${total.toFixed(2)}`;
+  return total;
+}
 
-  const name = document.getElementById("customerName").value || "N/A";
-  const city = document.getElementById("customerCity").value || "N/A";
-  const date = document.getElementById("billDate").value;
+function togglePending() {
+  const box = document.getElementById("pendingAmountBox");
+  const checkbox = document.getElementById("isPending");
+  box.style.display = checkbox.checked ? "block" : "none";
+  
+  if (!checkbox.checked) {
+    document.getElementById("pendingAmount").value = "";
+  }
+}
 
-  const pending = document.getElementById("isPending").checked
-    ? parseFloat(document.getElementById("pendingAmt").value) || 0
-    : 0;
+// Form validation
+function validateForm() {
+  const customerName = document.getElementById("customerName").value.trim();
+  const bannerRows = document.querySelectorAll(".bannerRow");
+  
+  if (!customerName) {
+    alert("Please enter customer name!");
+    return false;
+  }
+  
+  if (bannerRows.length === 0) {
+    alert("Please add at least one banner!");
+    return false;
+  }
+  
+  // Check if all banner rows have valid data
+  for (let row of bannerRows) {
+    const height = parseFloat(row.querySelector(".height")?.value || 0);
+    const width = parseFloat(row.querySelector(".width")?.value || 0);
+    const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+    
+    if (height <= 0 || width <= 0 || rate <= 0) {
+      alert("Please fill all banner details with valid values!");
+      return false;
+    }
+  }
+  
+  return true;
+}
 
-  let history = JSON.parse(localStorage.getItem("billHistory")) || [];
-  const billNo = 100 + history.length;
+// Fixed form submission
+billForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  if (!validateForm()) {
+    return;
+  }
+  
+  const customerName = document.getElementById("customerName").value.trim();
+  const customerCity = document.getElementById("customerCity").value.trim() || "Not specified";
+  const date = document.getElementById("billDate").value || new Date().toISOString().slice(0,10);
+  const bannerTitle = document.getElementById("bannerTitle").value.trim();
+
+  const isPending = document.getElementById("isPending").checked;
+  const pendingAmount = isPending ? parseFloat(document.getElementById("pendingAmount").value || 0) : 0;
+
+  const banners = [];
+  let totalAmount = 0;
+
+  document.querySelectorAll(".bannerRow").forEach(row => {
+    const height = parseFloat(row.querySelector(".height")?.value || 0);
+    const width = parseFloat(row.querySelector(".width")?.value || 0);
+    const qty = parseInt(row.querySelector(".quantity")?.value || 1);
+    const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
+    const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
+    const name = row.querySelector(".banner-name")?.value.trim() || "Banner";
+
+    const sqFt = height * width;
+    const bannerTotal = (sqFt * rate * qty) + (bondQty * 50);
+    totalAmount += bannerTotal;
+
+    banners.push({ 
+      name, 
+      height, 
+      width, 
+      qty, 
+      rate, 
+      bondQty
+    });
+  });
+
+  // Get bill history and generate new bill number
+  const history = JSON.parse(localStorage.getItem("billHistory") || "[]");
+  const billNo = history.length > 0 ? Math.max(...history.map(b => b.billNo || 0)) + 1 : 100;
 
   const billData = {
     billNo,
-    customerName: name,
-    city,
+    customerName,
+    customerCity,
     date,
+    bannerTitle,
     banners,
-    bondQty,
-    total: total.toFixed(2),
-    pending: pending.toFixed(2)
+    totalAmount,
+    isPending,
+    pendingAmount
   };
 
-  localStorage.setItem("lastBill", JSON.stringify(billData));
+  // Save to history
   history.push(billData);
   localStorage.setItem("billHistory", JSON.stringify(history));
+  
+  // Save current bill for display
+  localStorage.setItem("latestBill", JSON.stringify(billData));
 
+  // Show success message
+  alert("Bill generated successfully!");
+  
+  // Redirect to bill page
   window.location.href = "bill.html";
-}
+});
+
+// Initialize first banner row
+document.addEventListener("DOMContentLoaded", function() {
+  createBannerRow();
+  
+  // Auto-fill today's date if not set
+  const dateInput = document.getElementById("billDate");
+  if (!dateInput.value) {
+    dateInput.valueAsDate = new Date();
+  }
+});
