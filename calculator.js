@@ -1,16 +1,124 @@
 let bannerCount = 0;
 const bannerContainer = document.getElementById("bannerContainer");
 const totalAmountEl = document.getElementById("totalAmount");
+const totalSqftEl = document.getElementById("totalSqft");
 const billForm = document.getElementById("calcForm");
+
+// localStorage key constants
+const STORAGE_KEYS = {
+  PRESET_RATES: 'shaikhDigital_presetRates',
+  BILL_HISTORY: 'shaikhDigital_billHistory',
+  CURRENT_BILL: 'shaikhDigital_currentBill',
+  LAST_UPDATE: 'shaikhDigital_lastUpdate'
+};
+
+// Default preset rates
+const defaultPresetRates = {
+  "Flex": 30,
+  "Vinyl": 40,
+  "Glow Sign": 50
+};
+
+// In-memory storage for calculator session
+let calculatorData = {
+  presetRates: defaultPresetRates,
+  billHistory: [],
+  lastUpdateCheck: 0
+};
 
 // Load preset rates from localStorage
 function loadPresetRates() {
-  const presets = JSON.parse(localStorage.getItem("presetRates")) || {
-    "Flex": 30,
-    "Vinyl": 40,
-    "Glow Sign": 50
-  };
-  return presets;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+    if (stored) {
+      calculatorData.presetRates = JSON.parse(stored);
+      return calculatorData.presetRates;
+    }
+  } catch (e) {
+    console.log("Error loading preset rates from localStorage:", e);
+  }
+  
+  calculatorData.presetRates = defaultPresetRates;
+  return calculatorData.presetRates;
+}
+
+// Check for preset rate updates
+function checkForPresetUpdates() {
+  try {
+    const lastUpdate = localStorage.getItem(STORAGE_KEYS.LAST_UPDATE);
+    if (lastUpdate) {
+      const updateTime = parseInt(lastUpdate);
+      if (updateTime > calculatorData.lastUpdateCheck) {
+        calculatorData.lastUpdateCheck = updateTime;
+        loadPresetRates();
+        updateBannerRowPresets();
+        return true;
+      }
+    }
+  } catch (e) {
+    console.log("Error checking for preset updates:", e);
+  }
+  return false;
+}
+
+// Load bill history from localStorage
+function loadBillHistory() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
+    if (stored) {
+      calculatorData.billHistory = JSON.parse(stored);
+      return calculatorData.billHistory;
+    }
+  } catch (e) {
+    console.log("Error loading bill history from localStorage:", e);
+  }
+  
+  calculatorData.billHistory = [];
+  return calculatorData.billHistory;
+}
+
+// Save bill history to localStorage
+function saveBillHistory() {
+  try {
+    localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify(calculatorData.billHistory));
+    return true;
+  } catch (e) {
+    console.log("Error saving bill history to localStorage:", e);
+    return false;
+  }
+}
+
+// Save current bill to localStorage
+function saveCurrentBill(billData) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_BILL, JSON.stringify(billData));
+    return true;
+  } catch (e) {
+    console.log("Error saving current bill to localStorage:", e);
+    return false;
+  }
+}
+
+// Update banner row presets when admin changes them
+function updateBannerRowPresets() {
+  const presets = calculatorData.presetRates;
+  
+  document.querySelectorAll('.rateSelect').forEach(select => {
+    const currentValue = select.value;
+    
+    let optionsHtml = '<option value="">Select Type</option>';
+    Object.entries(presets).forEach(([name, rate]) => {
+      optionsHtml += `<option value="${rate}">${name} – ₹${rate}</option>`;
+    });
+    optionsHtml += '<option value="custom">Custom</option>';
+    
+    select.innerHTML = optionsHtml;
+    
+    // Try to restore previous selection
+    if (currentValue && currentValue !== "custom") {
+      select.value = currentValue;
+    }
+  });
 }
 
 function createBannerRow() {
@@ -19,7 +127,7 @@ function createBannerRow() {
   row.setAttribute("data-id", bannerCount);
 
   // Get preset rates dynamically
-  const presets = loadPresetRates();
+  const presets = calculatorData.presetRates;
   let optionsHtml = '<option value="">Select Type</option>';
   
   Object.entries(presets).forEach(([name, rate]) => {
@@ -48,8 +156,9 @@ function createBannerRow() {
   attachInputListeners(row);
 }
 
-// Missing addBanner function - FIX
 function addBanner() {
+  // Check for preset updates before adding new banner
+  checkForPresetUpdates();
   createBannerRow();
   updateTotal();
 }
@@ -94,6 +203,7 @@ function removeBanner(button) {
 function updateTotal() {
   const rows = document.querySelectorAll(".bannerRow");
   let total = 0;
+  let totalSqft = 0;
 
   rows.forEach(row => {
     const height = parseFloat(row.querySelector(".height")?.value || 0);
@@ -102,13 +212,19 @@ function updateTotal() {
     const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
     const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
     
-    const sqFt = height * width;
-    const bannerTotal = sqFt * rate * quantity;
+    const sqFt = height * width * quantity;
+    const bannerTotal = height * width * rate * quantity;
     const bondCharge = bondQty * 50; // ₹50 per bond
+    
     total += bannerTotal + bondCharge;
+    totalSqft += sqFt;
   });
 
   totalAmountEl.innerText = `Total: ₹${total.toFixed(2)}`;
+  if (totalSqftEl) {
+    totalSqftEl.innerText = `Total Sq.ft: ${totalSqft.toFixed(2)}`;
+  }
+  
   return total;
 }
 
@@ -128,12 +244,12 @@ function validateForm() {
   const bannerRows = document.querySelectorAll(".bannerRow");
   
   if (!customerName) {
-    alert("Please enter customer name!");
+    showNotification("Please enter customer name!", "error");
     return false;
   }
   
   if (bannerRows.length === 0) {
-    alert("Please add at least one banner!");
+    showNotification("Please add at least one banner!", "error");
     return false;
   }
   
@@ -144,12 +260,36 @@ function validateForm() {
     const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
     
     if (height <= 0 || width <= 0 || rate <= 0) {
-      alert("Please fill all banner details with valid values!");
+      showNotification("Please fill all banner details with valid values!", "error");
       return false;
     }
   }
   
   return true;
+}
+
+function showNotification(message, type = "info") {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${type === 'error' ? '#e74c3c' : type === 'success' ? '#27ae60' : '#3498db'};
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-weight: 600;
+    animation: slideIn 0.3s ease;
+  `;
+  
+  notification.innerHTML = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 4000);
 }
 
 // Fixed form submission
@@ -170,6 +310,7 @@ billForm.addEventListener("submit", (e) => {
 
   const banners = [];
   let totalAmount = 0;
+  let totalSqft = 0;
 
   document.querySelectorAll(".bannerRow").forEach(row => {
     const height = parseFloat(row.querySelector(".height")?.value || 0);
@@ -179,9 +320,10 @@ billForm.addEventListener("submit", (e) => {
     const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
     const name = row.querySelector(".banner-name")?.value.trim() || "Banner";
 
-    const sqFt = height * width;
-    const bannerTotal = (sqFt * rate * qty) + (bondQty * 50);
+    const sqFt = height * width * qty;
+    const bannerTotal = (height * width * rate * qty) + (bondQty * 50);
     totalAmount += bannerTotal;
+    totalSqft += sqFt;
 
     banners.push({ 
       name, 
@@ -194,7 +336,7 @@ billForm.addEventListener("submit", (e) => {
   });
 
   // Get bill history and generate new bill number
-  const history = JSON.parse(localStorage.getItem("billHistory") || "[]");
+  const history = loadBillHistory();
   const billNo = history.length > 0 ? Math.max(...history.map(b => b.billNo || 0)) + 1 : 100;
 
   const billData = {
@@ -205,26 +347,47 @@ billForm.addEventListener("submit", (e) => {
     bannerTitle,
     banners,
     totalAmount,
+    totalSqft,
     isPending,
     pendingAmount
   };
 
   // Save to history
-  history.push(billData);
-  localStorage.setItem("billHistory", JSON.stringify(history));
-  
-  // Save current bill for display
-  localStorage.setItem("latestBill", JSON.stringify(billData));
-
-  // Show success message
-  alert("Bill generated successfully!");
-  
-  // Redirect to bill page
-  window.location.href = "bill.html";
+  calculatorData.billHistory.push(billData);
+  if (saveBillHistory()) {
+    // Save current bill for display
+    if (saveCurrentBill(billData)) {
+      // Show success message
+      showNotification("Bill generated successfully!", "success");
+      
+      // Redirect to bill page after a short delay
+      setTimeout(() => {
+        window.location.href = "bill.html";
+      }, 1000);
+    } else {
+      showNotification("Error saving bill data!", "error");
+    }
+  } else {
+    showNotification("Error saving to history!", "error");
+  }
 });
 
-// Initialize first banner row
+// Listen for preset rate updates from admin panel
+window.addEventListener('presetRatesUpdated', function(event) {
+  calculatorData.presetRates = event.detail;
+  updateBannerRowPresets();
+});
+
+// Periodic check for preset updates (every 5 seconds)
+setInterval(checkForPresetUpdates, 5000);
+
+// Initialize on page load
 document.addEventListener("DOMContentLoaded", function() {
+  // Load data from localStorage
+  loadPresetRates();
+  loadBillHistory();
+  
+  // Create first banner row
   createBannerRow();
   
   // Auto-fill today's date if not set
@@ -232,4 +395,14 @@ document.addEventListener("DOMContentLoaded", function() {
   if (!dateInput.value) {
     dateInput.valueAsDate = new Date();
   }
+  
+  // Add CSS for notifications
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
 });

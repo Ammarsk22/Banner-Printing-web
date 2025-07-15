@@ -4,18 +4,125 @@
   <meta charset="UTF-8" />
   <title>Admin Panel - Shaikh Digital</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .preset-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    #loginError {
+      color: #e74c3c;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
+    .success-msg {
+      background: #2ecc71;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 30px;
+      }
+      
+      .preset-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container" id="loginBox">
     <h2>🔐 Admin Login</h2>
     <input type="password" id="adminPass" placeholder="Enter Password" />
     <button onclick="checkLogin()">Login</button>
-    <p id="loginError" style="color: red; display: none;">Incorrect password</p>
+    <p id="loginError" style="display: none;">Incorrect password</p>
   </div>
 
   <div class="container" id="adminPanel" style="display: none;">
     <h2>⚙️ Manage Banner Types & Rates</h2>
+    <div class="success-msg" id="successMsg">✅ Presets saved successfully!</div>
     <div id="presetForm">
       <div class="preset-row">
         <input type="text" id="vinylName" placeholder="Vinyl name" />
@@ -31,39 +138,62 @@
       </div>
     </div>
     <button onclick="savePresets()">💾 Save Presets</button>
-    <button onclick="window.location.href='index.html'" style="margin-left: 10px;">🔙 Back to Home</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">🔙 Back to Home</button>
   </div>
 
   <script>
     const password = "Shaikh@2012";
 
-    // In-memory storage for admin session
-    let adminData = {
-      presetRates: {
-        "Vinyl": 40,
-        "Flex": 30,
-        "Glow Sign": 50
-      }
+    // Default preset rates
+    const defaultPresetRates = {
+      "Vinyl": 40,
+      "Flex": 30,
+      "Glow Sign": 50
     };
 
-    // Initialize data from localStorage if available
-    function initializeAdminData() {
+    // localStorage key constants
+    const STORAGE_KEYS = {
+      PRESET_RATES: 'shaikhDigital_presetRates',
+      ADMIN_SESSION: 'shaikhDigital_adminSession'
+    };
+
+    // Load preset rates from localStorage
+    function loadPresetRates() {
       try {
-        const stored = localStorage.getItem("presetRates");
+        const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
         if (stored) {
-          adminData.presetRates = JSON.parse(stored);
+          return JSON.parse(stored);
         }
       } catch (e) {
-        console.log("Using default preset rates");
+        console.log("Error loading preset rates from localStorage:", e);
+      }
+      return defaultPresetRates;
+    }
+
+    // Save preset rates to localStorage
+    function savePresetRates(rates) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(rates));
+        return true;
+      } catch (e) {
+        console.log("Error saving preset rates to localStorage:", e);
+        return false;
       }
     }
 
-    // Save to localStorage
-    function saveToLocalStorage() {
+    // Broadcast preset update to other pages
+    function broadcastPresetUpdate(rates) {
+      // Create a custom event to notify other pages
+      const event = new CustomEvent('presetRatesUpdated', {
+        detail: rates
+      });
+      window.dispatchEvent(event);
+      
+      // Also store a timestamp to help other pages detect changes
       try {
-        localStorage.setItem("presetRates", JSON.stringify(adminData.presetRates));
+        localStorage.setItem('shaikhDigital_lastUpdate', Date.now().toString());
       } catch (e) {
-        console.log("LocalStorage not available");
+        console.log("Error saving update timestamp:", e);
       }
     }
 
@@ -73,24 +203,30 @@
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("adminPanel").style.display = "block";
         loadPresets();
+        
+        // Save admin session
+        try {
+          localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, Date.now().toString());
+        } catch (e) {
+          console.log("Error saving admin session:", e);
+        }
       } else {
         document.getElementById("loginError").style.display = "block";
       }
     }
 
     function loadPresets() {
-      initializeAdminData();
-      const data = adminData.presetRates;
-      const keys = Object.keys(data);
+      const presetRates = loadPresetRates();
+      const keys = Object.keys(presetRates);
 
       document.getElementById("vinylName").value = keys[0] || "Vinyl";
-      document.getElementById("vinylRate").value = data[keys[0]] || 40;
+      document.getElementById("vinylRate").value = presetRates[keys[0]] || 40;
 
       document.getElementById("flexName").value = keys[1] || "Flex";
-      document.getElementById("flexRate").value = data[keys[1]] || 30;
+      document.getElementById("flexRate").value = presetRates[keys[1]] || 30;
 
       document.getElementById("glowName").value = keys[2] || "Glow Sign";
-      document.getElementById("glowRate").value = data[keys[2]] || 50;
+      document.getElementById("glowRate").value = presetRates[keys[2]] || 50;
     }
 
     function savePresets() {
@@ -103,18 +239,65 @@
       const glowName = document.getElementById("glowName").value.trim() || "Glow Sign";
       const glowRate = parseFloat(document.getElementById("glowRate").value) || 50;
 
-      adminData.presetRates = {};
-      adminData.presetRates[vinylName] = vinylRate;
-      adminData.presetRates[flexName] = flexRate;
-      adminData.presetRates[glowName] = glowRate;
+      const newPresetRates = {};
+      newPresetRates[vinylName] = vinylRate;
+      newPresetRates[flexName] = flexRate;
+      newPresetRates[glowName] = glowRate;
 
-      saveToLocalStorage();
-      alert("✅ Presets saved successfully! Please refresh the main page to see changes.");
+      // Save to localStorage
+      if (savePresetRates(newPresetRates)) {
+        // Broadcast the update to other pages
+        broadcastPresetUpdate(newPresetRates);
+
+        // Show success message
+        const successMsg = document.getElementById("successMsg");
+        successMsg.style.display = "block";
+        setTimeout(() => {
+          successMsg.style.display = "none";
+        }, 3000);
+      } else {
+        alert("Error saving presets. Please try again.");
+      }
+    }
+
+    // Check if admin is already logged in
+    function checkAdminSession() {
+      try {
+        const session = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
+        if (session) {
+          const sessionTime = parseInt(session);
+          const currentTime = Date.now();
+          // Session valid for 1 hour
+          if (currentTime - sessionTime < 3600000) {
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+            loadPresets();
+            return true;
+          } else {
+            // Session expired, remove it
+            localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+          }
+        }
+      } catch (e) {
+        console.log("Error checking admin session:", e);
+      }
+      return false;
     }
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', function() {
-      initializeAdminData();
+      if (!checkAdminSession()) {
+        loadPresets(); // Load presets for display even if not logged in
+      }
+    });
+
+    // Clear admin session on page unload
+    window.addEventListener('beforeunload', function() {
+      try {
+        localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+      } catch (e) {
+        console.log("Error clearing admin session:", e);
+      }
     });
   </script>
 </body>

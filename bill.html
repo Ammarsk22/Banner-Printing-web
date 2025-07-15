@@ -83,6 +83,40 @@
       font-size: 18px;
       margin: 10px 0;
     }
+
+    .bill-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #667eea;
+    }
+
+    .summary-item {
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .total-sqft {
+      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      color: white;
+    }
+
+    .total-amount {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .pending-amount {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      grid-column: 1 / -1;
+      margin-top: 10px;
+    }
     
     .bill-actions {
       text-align: center;
@@ -145,6 +179,15 @@
       .bill-table th, .bill-table td {
         padding: 8px 4px;
       }
+
+      .bill-summary {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .summary-item {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -185,133 +228,106 @@
       </tbody>
     </table>
 
-    <div class="bill-footer">
-      <p><strong>Total Amount: ₹<span id="totalAmount">0.00</span></strong></p>
-      <p id="pendingAmountText" style="display:none; color: #e74c3c;">
-        <strong>Pending: ₹<span id="pendingAmount">0.00</span></strong>
-      </p>
+    <div class="bill-summary">
+      <div class="summary-item total-sqft">
+        <div>Total Sq.ft</div>
+        <div id="totalSqft">0.00</div>
+      </div>
+      <div class="summary-item total-amount">
+        <div>Total Amount</div>
+        <div>₹<span id="totalAmount">0.00</span></div>
+      </div>
+      <div id="pendingAmountBox" class="summary-item pending-amount" style="display:none;">
+        <div>Pending Amount</div>
+        <div>₹<span id="pendingAmount">0.00</span></div>
+      </div>
     </div>
 
     <div class="bill-actions">
       <button class="btn-print" onclick="window.print()">🖨️ Print Bill</button>
       <button class="btn-download" onclick="downloadPDF()">⬇️ Download PDF</button>
-      <button class="btn-back" onclick="window.location.href='index.html'">🔙 Back to Home</button>
+      <button class="btn-back" onclick="window.location.href='index.html'">🏠 Back to Home</button>
     </div>
   </div>
 
   <script>
-    // In-memory storage for session data
-    let sessionData = {
-      latestBill: null
-    };
-
-    // Initialize data from localStorage if available
-    function initializeData() {
+    // Load bill data from localStorage
+    function loadBillData() {
       try {
-        const stored = localStorage.getItem("latestBill");
-        if (stored) {
-          sessionData.latestBill = JSON.parse(stored);
+        const currentBill = localStorage.getItem('currentBill');
+        if (currentBill) {
+          const billData = JSON.parse(currentBill);
+          populateBillData(billData);
+        } else {
+          // If no current bill, try to get from URL parameters or show error
+          showError('No bill data found. Please generate a bill first.');
         }
-      } catch (e) {
-        console.log("No stored bill data found");
+      } catch (error) {
+        console.error('Error loading bill data:', error);
+        showError('Error loading bill data. Please try again.');
       }
     }
 
-    window.onload = function () {
-      initializeData();
-      
-      const data = sessionData.latestBill;
-      if (!data) {
-        alert("No bill data found! Redirecting to home page.");
-        window.location.href = "index.html";
-        return;
+    // Populate bill data in the HTML
+    function populateBillData(billData) {
+      // Set basic info
+      document.getElementById('billNo').textContent = billData.billNo || '-';
+      document.getElementById('billDate').textContent = billData.date || '-';
+      document.getElementById('customerName').textContent = billData.customerName || '-';
+      document.getElementById('customerCity').textContent = billData.customerCity || '-';
+      document.getElementById('bannerTitle').textContent = billData.bannerTitle || '-';
+
+      // Set totals
+      document.getElementById('totalAmount').textContent = billData.totalAmount ? billData.totalAmount.toFixed(2) : '0.00';
+      document.getElementById('totalSqft').textContent = billData.totalSqft ? billData.totalSqft.toFixed(2) : '0.00';
+
+      // Handle pending amount
+      if (billData.isPending && billData.pendingAmount > 0) {
+        document.getElementById('pendingAmountBox').style.display = 'block';
+        document.getElementById('pendingAmount').textContent = billData.pendingAmount.toFixed(2);
       }
 
-      try {
-        // Fill bill details
-        document.getElementById("billNo").textContent = data.billNo || "N/A";
-        document.getElementById("billDate").textContent = data.date || "N/A";
-        document.getElementById("customerName").textContent = data.customerName || "N/A";
-        document.getElementById("customerCity").textContent = data.customerCity || "N/A";
-        document.getElementById("bannerTitle").textContent = data.bannerTitle || "N/A";
+      // Populate banner table
+      const tableBody = document.getElementById('bannerTableBody');
+      tableBody.innerHTML = '';
 
-        const tbody = document.getElementById("bannerTableBody");
-        tbody.innerHTML = ""; // Clear existing content
-        
-        let grandTotal = 0;
-
-        // Process each banner
-        if (data.banners && data.banners.length > 0) {
-          data.banners.forEach((banner, index) => {
-            const tr = document.createElement("tr");
-
-            const height = parseFloat(banner.height) || 0;
-            const width = parseFloat(banner.width) || 0;
-            const area = height * width;
-            const rate = parseFloat(banner.rate) || 0;
-            const qty = parseInt(banner.qty) || 1;
-            const bondQty = parseInt(banner.bondQty) || 0;
-            
-            // Calculate banner cost
-            const bannerCost = area * rate * qty;
-            const bondCost = bondQty * 50;
-            const totalCost = bannerCost + bondCost;
-            
-            grandTotal += totalCost;
-
-            tr.innerHTML = `
-              <td>${index + 1}</td>
-              <td>${banner.name || "Banner"}</td>
-              <td>${height}×${width} ft</td>
-              <td>${qty}</td>
-              <td>₹${rate.toFixed(2)}</td>
-              <td>${bondQty}</td>
-              <td>₹${totalCost.toFixed(2)}</td>
-            `;
-
-            tbody.appendChild(tr);
-          });
-        } else {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No banner data found</td></tr>';
-        }
-
-        // Display total amount
-        document.getElementById("totalAmount").textContent = grandTotal.toFixed(2);
-
-        // Show pending amount if applicable
-        if (data.isPending && parseFloat(data.pendingAmount) > 0) {
-          document.getElementById("pendingAmount").textContent = parseFloat(data.pendingAmount).toFixed(2);
-          document.getElementById("pendingAmountText").style.display = "block";
-        } else {
-          document.getElementById("pendingAmountText").style.display = "none";
-        }
-
-      } catch (error) {
-        console.error("Error loading bill data:", error);
-        alert("Error loading bill data. Please try again.");
-        window.location.href = "index.html";
+      if (billData.banners && billData.banners.length > 0) {
+        billData.banners.forEach((banner, index) => {
+          const row = document.createElement('tr');
+          const sqft = banner.height * banner.width * banner.qty;
+          const bannerTotal = (banner.height * banner.width * banner.rate * banner.qty) + (banner.bondQty * 50);
+          
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${banner.name}</td>
+            <td>${banner.height}×${banner.width}</td>
+            <td>${banner.qty}</td>
+            <td>₹${banner.rate}</td>
+            <td>${banner.bondQty || 0}</td>
+            <td>₹${bannerTotal.toFixed(2)}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } else {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No banner data found</td></tr>';
       }
-    };
+    }
 
+    // Show error message
+    function showError(message) {
+      const tableBody = document.getElementById('bannerTableBody');
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: #e74c3c;">${message}</td></tr>`;
+    }
+
+    // Download PDF function
     function downloadPDF() {
-      // For now, use print functionality
-      // In future, can integrate with jsPDF library
-      alert("PDF download feature will be available soon. Please use Print for now.");
+      // Simple implementation - you can enhance this with a PDF library
       window.print();
     }
 
-    // Add print styles when printing
-    function preparePrint() {
-      document.body.classList.add('printing');
-    }
-
-    // Remove print styles after printing
-    window.addEventListener('afterprint', function() {
-      document.body.classList.remove('printing');
-    });
-
-    window.addEventListener('beforeprint', function() {
-      preparePrint();
+    // Load bill data when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      loadBillData();
     });
   </script>
 </body>

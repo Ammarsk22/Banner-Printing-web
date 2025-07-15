@@ -5,223 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shaikh Digital - Banner Calculator</title>
   <style>
-    /* General Reset */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
     }
 
     body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      padding: 20px;
-      color: #333;
-    }
-
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
-      position: relative;
+      line-height: 1.6;
     }
 
     .menu {
-      position: absolute;
-      top: 15px;
-      right: 15px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
     }
 
     .hamburger {
-      font-size: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
       cursor: pointer;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
     }
 
     .hamburger:hover {
-      background: #e9ecef;
+      background: white;
       transform: scale(1.1);
     }
 
     .dropdown {
       position: absolute;
-      top: 100%;
+      top: 60px;
       right: 0;
       background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      display: none;
-      z-index: 1000;
-      min-width: 160px;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      min-width: 180px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
 
     .dropdown.show {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
 
     .dropdown a {
       display: block;
-      padding: 12px 16px;
+      padding: 12px 20px;
       text-decoration: none;
       color: #333;
-      border-bottom: 1px solid #f1f1f1;
-      transition: background 0.3s ease;
-    }
-
-    .dropdown a:hover {
-      background: #f8f9fa;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #f0f0f0;
     }
 
     .dropdown a:last-child {
       border-bottom: none;
     }
 
+    .dropdown a:hover {
+      background: #f8f9fa;
+      padding-left: 25px;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      padding: 30px 20px;
+      margin: 20px auto;
+      max-width: 900px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
     .logo {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 10px;
-      border-radius: 50%;
-      border: 3px solid #667eea;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 15px;
-      font-size: 36px;
+      font-size: 60px;
       font-weight: bold;
       color: #667eea;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
     }
 
     header h1 {
-      font-size: 28px;
+      font-size: 32px;
       color: #2c3e50;
-      margin-bottom: 8px;
+      margin-bottom: 15px;
     }
 
     header p {
-      font-size: 14px;
       color: #666;
-      margin: 4px 0;
+      margin: 5px 0;
+      font-size: 16px;
     }
 
-    /* Container */
     .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    form {
       background: rgba(255, 255, 255, 0.95);
       padding: 30px;
-      border-radius: 15px;
-      max-width: 900px;
-      margin: auto;
+      border-radius: 20px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       backdrop-filter: blur(10px);
     }
 
-    /* Form */
     .form-group {
       margin-bottom: 20px;
     }
 
-    .form-group label {
+    label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
       color: #2c3e50;
     }
 
-    .form-group input {
+    input, select {
       width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e9ecef;
+      padding: 12px;
+      border: 2px solid #e1e8ed;
       border-radius: 8px;
       font-size: 16px;
-      transition: border-color 0.3s ease;
+      transition: all 0.3s ease;
+      background: white;
     }
 
-    .form-group input:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    /* Banner Row */
     .bannerRow {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
+      grid-template-columns: 1fr 0.8fr 0.8fr 0.6fr 1.2fr 1fr auto auto auto;
+      gap: 10px;
       margin-bottom: 15px;
-      padding: 20px;
+      padding: 15px;
       background: #f8f9fa;
       border-radius: 10px;
-      border: 1px solid #dee2e6;
+      align-items: center;
     }
 
     .bannerRow input, .bannerRow select {
-      padding: 10px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
+      padding: 8px;
       font-size: 14px;
     }
 
-    .bannerRow input:focus, .bannerRow select:focus {
-      outline: none;
-      border-color: #667eea;
-    }
-
-    /* Buttons */
     .btn {
       padding: 12px 24px;
       border: none;
       border-radius: 8px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin: 8px 8px 8px 0;
-      font-size: 16px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
     }
 
     .btn-success {
       background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
       color: white;
-    }
-
-    .btn-success:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+      margin: 20px 0;
     }
 
     .btn-warning {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
       color: white;
-    }
-
-    .btn-warning:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+      font-size: 18px;
+      padding: 15px 30px;
+      width: 100%;
+      margin-top: 20px;
     }
 
     .btn-danger {
@@ -231,57 +206,42 @@
       font-size: 14px;
     }
 
-    .btn-danger:hover {
-      background: #c0392b;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* Total Amount */
     #totalAmount {
       font-size: 24px;
       font-weight: bold;
       text-align: center;
-      padding: 20px;
+      margin: 20px 0;
+      padding: 15px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border-radius: 10px;
-      margin: 20px 0;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    /* Pending Amount */
-    #pendingAmountBox {
-      background: #fff3cd;
-      border: 1px solid #ffeaa7;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 15px 0;
+    #totalSqft {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0;
+      padding: 12px;
+      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    #pendingAmountBox label {
-      color: #856404;
-      font-weight: 600;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .bannerRow {
-        grid-template-columns: 1fr;
-      }
-      
-      .container {
-        padding: 20px;
-      }
-      
-      header h1 {
-        font-size: 24px;
-      }
-    }
-
-    /* Loading Animation */
     .loading {
       display: none;
       text-align: center;
+      margin: 20px 0;
       padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
     }
 
     .spinner {
@@ -291,12 +251,43 @@
       width: 40px;
       height: 40px;
       animation: spin 1s linear infinite;
-      margin: 0 auto;
+      margin: 0 auto 15px;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    #pendingAmountBox {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff3cd;
+      border-radius: 8px;
+      border: 1px solid #ffeaa7;
+    }
+
+    @media (max-width: 768px) {
+      .bannerRow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      header h1 {
+        font-size: 24px;
+      }
+      
+      .logo {
+        font-size: 40px;
+      }
+      
+      .container {
+        padding: 10px;
+      }
+      
+      form {
+        padding: 20px;
+      }
     }
   </style>
 </head>
@@ -321,30 +312,26 @@
 
 <div class="container">
   <form id="calcForm">
+    <!-- Customer fields -->
     <div class="form-group">
       <label for="customerName">Customer Name *</label>
       <input type="text" id="customerName" required />
     </div>
-    
     <div class="form-group">
       <label for="customerCity">Customer City</label>
       <input type="text" id="customerCity" />
     </div>
-    
     <div class="form-group">
       <label for="billDate">Date</label>
       <input type="date" id="billDate" />
     </div>
-    
     <div class="form-group">
       <label for="bannerTitle">Banner Title (Optional)</label>
       <input type="text" id="bannerTitle" />
     </div>
 
     <h3 style="margin: 20px 0;">Banner Details</h3>
-    <div id="bannerContainer">
-      <!-- Banners will be added here dynamically -->
-    </div>
+    <div id="bannerContainer"></div>
 
     <button type="button" class="btn btn-success" onclick="addBanner()">➕ Add Banner</button>
 
@@ -354,84 +341,106 @@
         Is Payment Pending?
       </label>
     </div>
-    
+
     <div id="pendingAmountBox" style="display: none;">
       <label for="pendingAmount">Pending Amount (₹)</label>
       <input type="number" id="pendingAmount" min="0" step="0.01" />
     </div>
 
     <div id="totalAmount">Total: ₹0.00</div>
-    
+    <div id="totalSqft">Total Sq.ft: 0.00</div>
+
     <div class="loading" id="loadingDiv">
       <div class="spinner"></div>
       <p>Generating Bill...</p>
     </div>
-    
+
     <button type="submit" class="btn btn-warning">📄 Generate Bill</button>
   </form>
 </div>  
 
 <script>
-// In-memory storage for session data
-let sessionData = {
-  presetRates: {
-    "Flex": 30,
-    "Vinyl": 40,
-    "Glow Sign": 50
-  },
-  billHistory: [],
-  latestBill: null
-};
-
-// Initialize with localStorage data if available
-function initializeData() {
+// Initialize localStorage with default values if not present
+function initializeLocalStorage() {
   try {
-    const storedPresets = localStorage.getItem("presetRates");
-    if (storedPresets) {
-      sessionData.presetRates = JSON.parse(storedPresets);
+    // Initialize preset rates if not present
+    if (!localStorage.getItem("presetRates")) {
+      const defaultRates = {
+        "Flex": 30,
+        "Vinyl": 40,
+        "Glow Sign": 50
+      };
+      localStorage.setItem("presetRates", JSON.stringify(defaultRates));
     }
-    
-    const storedHistory = localStorage.getItem("billHistory");
-    if (storedHistory) {
-      sessionData.billHistory = JSON.parse(storedHistory);
+
+    // Initialize bill history if not present
+    if (!localStorage.getItem("billHistory")) {
+      localStorage.setItem("billHistory", JSON.stringify([]));
     }
   } catch (e) {
-    console.log("Using default data");
+    console.warn("localStorage not available, using default values");
   }
 }
 
-// Save data to localStorage
-function saveToLocalStorage() {
+// Load preset rates from localStorage
+function loadPresetRates() {
   try {
-    localStorage.setItem("presetRates", JSON.stringify(sessionData.presetRates));
-    localStorage.setItem("billHistory", JSON.stringify(sessionData.billHistory));
-    if (sessionData.latestBill) {
-      localStorage.setItem("latestBill", JSON.stringify(sessionData.latestBill));
+    const storedRates = localStorage.getItem("presetRates");
+    if (storedRates) {
+      return JSON.parse(storedRates);
     }
   } catch (e) {
-    console.log("LocalStorage not available");
+    console.warn("Error loading preset rates");
   }
+  
+  // Return default rates if localStorage fails
+  return {
+    "Flex": 30,
+    "Vinyl": 40,
+    "Glow Sign": 50
+  };
+}
+
+// Save bill to localStorage
+function saveBillToHistory(billData) {
+  try {
+    const existingHistory = JSON.parse(localStorage.getItem("billHistory") || "[]");
+    existingHistory.push(billData);
+    localStorage.setItem("billHistory", JSON.stringify(existingHistory));
+    
+    // Also save as current bill for bill.html
+    localStorage.setItem("currentBill", JSON.stringify(billData));
+  } catch (e) {
+    console.warn("Error saving bill to history");
+  }
+}
+
+// Get next bill number
+function getNextBillNumber() {
+  try {
+    const history = JSON.parse(localStorage.getItem("billHistory") || "[]");
+    if (history.length > 0) {
+      const maxBillNo = Math.max(...history.map(b => b.billNo || 0));
+      return maxBillNo + 1;
+    }
+  } catch (e) {
+    console.warn("Error getting bill number");
+  }
+  return 100; // Default starting bill number
 }
 
 let bannerCount = 0;
 const bannerContainer = document.getElementById("bannerContainer");
 const totalAmountEl = document.getElementById("totalAmount");
-const billForm = document.getElementById("calcForm");
-
-// Load preset rates from session data
-function loadPresetRates() {
-  return sessionData.presetRates;
-}
+const totalSqftEl = document.getElementById("totalSqft");
 
 function createBannerRow() {
   const row = document.createElement("div");
   row.className = "bannerRow";
   row.setAttribute("data-id", bannerCount);
 
-  // Get preset rates dynamically
   const presets = loadPresetRates();
   let optionsHtml = '<option value="">Select Type</option>';
-  
   Object.entries(presets).forEach(([name, rate]) => {
     optionsHtml += `<option value="${rate}">${name} – ₹${rate}</option>`;
   });
@@ -442,17 +451,12 @@ function createBannerRow() {
     <input type="number" placeholder="Height (ft)" class="height" min="0" step="0.1" />
     <input type="number" placeholder="Width (ft)" class="width" min="0" step="0.1" />
     <input type="number" placeholder="Qty" class="quantity" value="1" min="1" />
-    <select class="rateSelect" onchange="handleRateChange(this)">
-      ${optionsHtml}
-    </select>
+    <select class="rateSelect" onchange="handleRateChange(this)">${optionsHtml}</select>
     <input type="number" placeholder="Rate/sq.ft" class="rateInput" min="0" />
-    <label>
-      <input type="checkbox" class="bondCheckbox" onchange="toggleBondInput(this)"> Bond?
-    </label>
+    <label><input type="checkbox" class="bondCheckbox" onchange="toggleBondInput(this)"> Bond?</label>
     <input type="number" placeholder="Bond Qty" class="bondQty" style="display:none;" min="0" value="0" />
     <button type="button" class="btn btn-danger" onclick="removeBanner(this)">❌</button>
   `;
-
   bannerContainer.appendChild(row);
   bannerCount++;
   attachInputListeners(row);
@@ -503,6 +507,7 @@ function removeBanner(button) {
 function updateTotal() {
   const rows = document.querySelectorAll(".bannerRow");
   let total = 0;
+  let totalSqft = 0;
 
   rows.forEach(row => {
     const height = parseFloat(row.querySelector(".height")?.value || 0);
@@ -511,13 +516,15 @@ function updateTotal() {
     const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
     const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
     
-    const sqFt = height * width;
-    const bannerTotal = sqFt * rate * quantity;
+    const sqFt = height * width * quantity;
+    const bannerTotal = height * width * rate * quantity;
     const bondCharge = bondQty * 50;
     total += bannerTotal + bondCharge;
+    totalSqft += sqFt;
   });
 
   totalAmountEl.innerText = `Total: ₹${total.toFixed(2)}`;
+  totalSqftEl.innerText = `Total Sq.ft: ${totalSqft.toFixed(2)}`;
   return total;
 }
 
@@ -525,7 +532,6 @@ function togglePending() {
   const box = document.getElementById("pendingAmountBox");
   const checkbox = document.getElementById("isPending");
   box.style.display = checkbox.checked ? "block" : "none";
-  
   if (!checkbox.checked) {
     document.getElementById("pendingAmount").value = "";
   }
@@ -534,52 +540,42 @@ function togglePending() {
 function validateForm() {
   const customerName = document.getElementById("customerName").value.trim();
   const bannerRows = document.querySelectorAll(".bannerRow");
-  
   if (!customerName) {
     alert("Please enter customer name!");
     return false;
   }
-  
   if (bannerRows.length === 0) {
     alert("Please add at least one banner!");
     return false;
   }
-  
   for (let row of bannerRows) {
     const height = parseFloat(row.querySelector(".height")?.value || 0);
     const width = parseFloat(row.querySelector(".width")?.value || 0);
     const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
-    
     if (height <= 0 || width <= 0 || rate <= 0) {
       alert("Please fill all banner details with valid values!");
       return false;
     }
   }
-  
   return true;
 }
 
-billForm.addEventListener("submit", (e) => {
+document.getElementById("calcForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  
-  if (!validateForm()) {
-    return;
-  }
-  
-  // Show loading
+  if (!validateForm()) return;
   document.getElementById("loadingDiv").style.display = "block";
-  
+
   setTimeout(() => {
     const customerName = document.getElementById("customerName").value.trim();
     const customerCity = document.getElementById("customerCity").value.trim() || "Not specified";
     const date = document.getElementById("billDate").value || new Date().toISOString().slice(0,10);
     const bannerTitle = document.getElementById("bannerTitle").value.trim();
-
     const isPending = document.getElementById("isPending").checked;
     const pendingAmount = isPending ? parseFloat(document.getElementById("pendingAmount").value || 0) : 0;
 
     const banners = [];
     let totalAmount = 0;
+    let totalSqft = 0;
 
     document.querySelectorAll(".bannerRow").forEach(row => {
       const height = parseFloat(row.querySelector(".height")?.value || 0);
@@ -588,24 +584,16 @@ billForm.addEventListener("submit", (e) => {
       const rate = parseFloat(row.querySelector(".rateInput")?.value || 0);
       const bondQty = parseInt(row.querySelector(".bondQty")?.value || 0);
       const name = row.querySelector(".banner-name")?.value.trim() || "Banner";
-
-      const sqFt = height * width;
-      const bannerTotal = (sqFt * rate * qty) + (bondQty * 50);
+      
+      const sqFt = height * width * qty;
+      const bannerTotal = (height * width * rate * qty) + (bondQty * 50);
       totalAmount += bannerTotal;
-
-      banners.push({ 
-        name, 
-        height, 
-        width, 
-        qty, 
-        rate, 
-        bondQty
-      });
+      totalSqft += sqFt;
+      
+      banners.push({ name, height, width, qty, rate, bondQty });
     });
 
-    // Generate new bill number
-    const billNo = sessionData.billHistory.length > 0 ? 
-      Math.max(...sessionData.billHistory.map(b => b.billNo || 0)) + 1 : 100;
+    const billNo = getNextBillNumber();
 
     const billData = {
       billNo,
@@ -615,24 +603,15 @@ billForm.addEventListener("submit", (e) => {
       bannerTitle,
       banners,
       totalAmount,
+      totalSqft,
       isPending,
       pendingAmount
     };
 
-    // Save to session data
-    sessionData.billHistory.push(billData);
-    sessionData.latestBill = billData;
-    
-    // Save to localStorage
-    saveToLocalStorage();
+    saveBillToHistory(billData);
 
-    // Hide loading
     document.getElementById("loadingDiv").style.display = "none";
-
-    // Show success message
     alert("Bill generated successfully!");
-    
-    // Redirect to bill page
     window.location.href = "bill.html";
   }, 1000);
 });
@@ -655,27 +634,23 @@ function showHelp() {
 For admin access, use the Admin Panel from the menu.`);
 }
 
-// Close dropdown when clicking outside
 window.addEventListener('click', function(event) {
   const dropdown = document.getElementById("dropdownMenu");
   const hamburger = document.querySelector('.hamburger');
-  
   if (!hamburger.contains(event.target)) {
     dropdown.classList.remove("show");
   }
 });
 
-// Initialize on page load
 document.addEventListener("DOMContentLoaded", function() {
-  initializeData();
+  initializeLocalStorage();
   createBannerRow();
-  
-  // Auto-fill today's date if not set
   const dateInput = document.getElementById("billDate");
   if (!dateInput.value) {
     dateInput.valueAsDate = new Date();
   }
 });
 </script>
+
 </body>
 </html>
