@@ -19,46 +19,20 @@ const defaultPresetRates = {
   "Glow Sign": 50
 };
 
-// In-memory storage for calculator session
-let calculatorData = {
-  presetRates: defaultPresetRates,
-  billHistory: [],
-  lastUpdateCheck: 0
-};
-
 // Load preset rates from localStorage
 function loadPresetRates() {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
     if (stored) {
-      calculatorData.presetRates = JSON.parse(stored);
-      return calculatorData.presetRates;
+      return JSON.parse(stored);
     }
   } catch (e) {
     console.log("Error loading preset rates from localStorage:", e);
   }
   
-  calculatorData.presetRates = defaultPresetRates;
-  return calculatorData.presetRates;
-}
-
-// Check for preset rate updates
-function checkForPresetUpdates() {
-  try {
-    const lastUpdate = localStorage.getItem(STORAGE_KEYS.LAST_UPDATE);
-    if (lastUpdate) {
-      const updateTime = parseInt(lastUpdate);
-      if (updateTime > calculatorData.lastUpdateCheck) {
-        calculatorData.lastUpdateCheck = updateTime;
-        loadPresetRates();
-        updateBannerRowPresets();
-        return true;
-      }
-    }
-  } catch (e) {
-    console.log("Error checking for preset updates:", e);
-  }
-  return false;
+  // If no stored rates, save defaults and return them
+  localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(defaultPresetRates));
+  return defaultPresetRates;
 }
 
 // Load bill history from localStorage
@@ -66,21 +40,29 @@ function loadBillHistory() {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
     if (stored) {
-      calculatorData.billHistory = JSON.parse(stored);
-      return calculatorData.billHistory;
+      const history = JSON.parse(stored);
+      console.log("Loaded bill history:", history.length, "bills");
+      return history;
     }
   } catch (e) {
     console.log("Error loading bill history from localStorage:", e);
   }
   
-  calculatorData.billHistory = [];
-  return calculatorData.billHistory;
+  // Initialize empty history if none exists
+  const emptyHistory = [];
+  localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify(emptyHistory));
+  console.log("Initialized empty bill history");
+  return emptyHistory;
 }
 
 // Save bill history to localStorage
-function saveBillHistory() {
+function saveBillHistory(billHistory) {
   try {
-    localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify(calculatorData.billHistory));
+    localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify(billHistory));
+    console.log("Saved bill history:", billHistory.length, "bills");
+    
+    // Update last update timestamp to notify admin panel
+    localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, Date.now().toString());
     return true;
   } catch (e) {
     console.log("Error saving bill history to localStorage:", e);
@@ -88,10 +70,11 @@ function saveBillHistory() {
   }
 }
 
-// Save current bill to localStorage
+// Save current bill to localStorage for display
 function saveCurrentBill(billData) {
   try {
     localStorage.setItem(STORAGE_KEYS.CURRENT_BILL, JSON.stringify(billData));
+    console.log("Saved current bill:", billData.billNo);
     return true;
   } catch (e) {
     console.log("Error saving current bill to localStorage:", e);
@@ -101,7 +84,7 @@ function saveCurrentBill(billData) {
 
 // Update banner row presets when admin changes them
 function updateBannerRowPresets() {
-  const presets = calculatorData.presetRates;
+  const presets = loadPresetRates();
   
   document.querySelectorAll('.rateSelect').forEach(select => {
     const currentValue = select.value;
@@ -127,7 +110,7 @@ function createBannerRow() {
   row.setAttribute("data-id", bannerCount);
 
   // Get preset rates dynamically
-  const presets = calculatorData.presetRates;
+  const presets = loadPresetRates();
   let optionsHtml = '<option value="">Select Type</option>';
   
   Object.entries(presets).forEach(([name, rate]) => {
@@ -157,8 +140,6 @@ function createBannerRow() {
 }
 
 function addBanner() {
-  // Check for preset updates before adding new banner
-  checkForPresetUpdates();
   createBannerRow();
   updateTotal();
 }
@@ -292,13 +273,15 @@ function showNotification(message, type = "info") {
   }, 4000);
 }
 
-// Fixed form submission
+// Fixed form submission with proper bill history handling
 billForm.addEventListener("submit", (e) => {
   e.preventDefault();
   
   if (!validateForm()) {
     return;
   }
+  
+  console.log("Form submitted, processing bill...");
   
   const customerName = document.getElementById("customerName").value.trim();
   const customerCity = document.getElementById("customerCity").value.trim() || "Not specified";
@@ -331,68 +314,102 @@ billForm.addEventListener("submit", (e) => {
       width, 
       qty, 
       rate, 
-      bondQty
+      bondQty,
+      sqFt: sqFt,
+      amount: bannerTotal
     });
   });
 
-  // Get bill history and generate new bill number
-  const history = loadBillHistory();
-  const billNo = history.length > 0 ? Math.max(...history.map(b => b.billNo || 0)) + 1 : 100;
+  // Load existing bill history
+  const existingHistory = loadBillHistory();
+  
+  // Generate new bill number
+  const billNo = existingHistory.length > 0 ? Math.max(...existingHistory.map(b => parseInt(b.billNo) || 0)) + 1 : 100;
 
   const billData = {
-    billNo,
-    customerName,
-    customerCity,
-    date,
-    bannerTitle,
-    banners,
-    totalAmount,
-    totalSqft,
-    isPending,
-    pendingAmount
+    billNo: billNo,
+    customerName: customerName,
+    customerCity: customerCity,
+    date: date,
+    bannerTitle: bannerTitle || "Banner Order",
+    banners: banners,
+    totalAmount: totalAmount,
+    totalSqft: totalSqft,
+    isPending: isPending,
+    pendingAmount: pendingAmount,
+    createdAt: new Date().toISOString()
   };
 
-  // Save to history
-  calculatorData.billHistory.push(billData);
-  if (saveBillHistory()) {
+  console.log("Bill data created:", billData);
+
+  // Add to existing history
+  existingHistory.push(billData);
+  
+  // Save updated history
+  if (saveBillHistory(existingHistory)) {
+    console.log("Bill saved to history successfully");
+    
     // Save current bill for display
     if (saveCurrentBill(billData)) {
+      console.log("Current bill saved for display");
+      
       // Show success message
-      showNotification("Bill generated successfully!", "success");
+      showNotification(`Bill #${billNo} generated successfully!`, "success");
       
       // Redirect to bill page after a short delay
       setTimeout(() => {
         window.location.href = "bill.html";
       }, 1000);
     } else {
-      showNotification("Error saving bill data!", "error");
+      showNotification("Error saving bill for display!", "error");
     }
   } else {
-    showNotification("Error saving to history!", "error");
+    showNotification("Error saving bill to history!", "error");
   }
 });
 
-// Listen for preset rate updates from admin panel
-window.addEventListener('presetRatesUpdated', function(event) {
-  calculatorData.presetRates = event.detail;
-  updateBannerRowPresets();
-});
+// Periodic check for preset updates from admin panel (every 5 seconds)
+function checkForPresetUpdates() {
+  try {
+    const lastUpdate = localStorage.getItem(STORAGE_KEYS.LAST_UPDATE);
+    const currentPresets = JSON.stringify(loadPresetRates());
+    
+    // Check if presets have changed
+    const storedPresets = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+    if (storedPresets && storedPresets !== currentPresets) {
+      updateBannerRowPresets();
+    }
+  } catch (e) {
+    console.log("Error checking for preset updates:", e);
+  }
+}
 
-// Periodic check for preset updates (every 5 seconds)
 setInterval(checkForPresetUpdates, 5000);
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", function() {
-  // Load data from localStorage
-  loadPresetRates();
-  loadBillHistory();
+  console.log("Calculator initialized");
+  
+  // Ensure localStorage is working
+  try {
+    localStorage.setItem('test', 'test');
+    localStorage.removeItem('test');
+    console.log("localStorage is working");
+  } catch (e) {
+    console.error("localStorage not available:", e);
+    showNotification("Warning: Data storage not available. Bills may not be saved.", "error");
+  }
+  
+  // Load and verify bill history
+  const history = loadBillHistory();
+  console.log("Current bill history count:", history.length);
   
   // Create first banner row
   createBannerRow();
   
   // Auto-fill today's date if not set
   const dateInput = document.getElementById("billDate");
-  if (!dateInput.value) {
+  if (dateInput && !dateInput.value) {
     dateInput.valueAsDate = new Date();
   }
   
@@ -405,4 +422,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   `;
   document.head.appendChild(style);
+  
+  console.log("Calculator setup complete");
 });

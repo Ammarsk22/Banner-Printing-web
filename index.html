@@ -16,6 +16,8 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       line-height: 1.6;
+      display: flex;
+      flex-direction: column;
     }
 
     .menu {
@@ -81,6 +83,10 @@
     .dropdown a:hover {
       background: #f8f9fa;
       padding-left: 25px;
+    }
+
+    .main-content {
+      flex: 1;
     }
 
     header {
@@ -267,6 +273,37 @@
       border: 1px solid #ffeaa7;
     }
 
+    /* Footer Styles */
+    footer {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .footer-content p {
+      margin: 5px 0;
+    }
+
+    .footer-content a {
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-content a:hover {
+      color: #764ba2;
+    }
+
     @media (max-width: 768px) {
       .bannerRow {
         grid-template-columns: 1fr;
@@ -288,76 +325,91 @@
       form {
         padding: 20px;
       }
+
+      footer {
+        padding: 15px;
+      }
+
+      .footer-content {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="menu">
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <div class="dropdown" id="dropdownMenu">
-      <a href="admin.html">🔧 Admin Panel</a>
-      <a href="history.html">📋 Bill History</a>
-      <a href="#" onclick="showHelp()">❓ Help</a>
+<div class="main-content">
+  <header>
+    <div class="menu">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="admin.html">🔧 Admin Panel</a>
+        <a href="#" onclick="showHelp()">❓ Help</a>
+      </div>
     </div>
+    
+    <div class="logo">SK</div>
+    <h1>Shaikh Digital & Redium</h1>
+    <p>Near Patan Chowfuli, Shindkheda, Dist - Dhule (MH)</p>
+    <p>📧 shaikhdigital1@gmail.com</p>
+    <p>📞 Vajid Shaikh – 9423494985 | Maksud Shaikh – 9158074459</p>
+  </header>
+
+  <div class="container">
+    <form id="calcForm">
+      <!-- Customer fields -->
+      <div class="form-group">
+        <label for="customerName">Customer Name *</label>
+        <input type="text" id="customerName" required />
+      </div>
+      <div class="form-group">
+        <label for="customerCity">Customer City</label>
+        <input type="text" id="customerCity" />
+      </div>
+      <div class="form-group">
+        <label for="billDate">Date</label>
+        <input type="date" id="billDate" />
+      </div>
+      <div class="form-group">
+        <label for="bannerTitle">Banner Title (Optional)</label>
+        <input type="text" id="bannerTitle" />
+      </div>
+
+      <h3 style="margin: 20px 0;">Banner Details</h3>
+      <div id="bannerContainer"></div>
+
+      <button type="button" class="btn btn-success" onclick="addBanner()">➕ Add Banner</button>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="isPending" onchange="togglePending()" style="margin-right: 8px;">
+          Is Payment Pending?
+        </label>
+      </div>
+
+      <div id="pendingAmountBox" style="display: none;">
+        <label for="pendingAmount">Pending Amount (₹)</label>
+        <input type="number" id="pendingAmount" min="0" step="0.01" />
+      </div>
+
+      <div id="totalAmount">Total: ₹0.00</div>
+      <div id="totalSqft">Total Sq.ft: 0.00</div>
+
+      <div class="loading" id="loadingDiv">
+        <div class="spinner"></div>
+        <p>Generating Bill...</p>
+      </div>
+
+      <button type="submit" class="btn btn-warning">📄 Generate Bill</button>
+    </form>
   </div>
-  
-  <div class="logo">SK</div>
-  <h1>Shaikh Digital & Redium</h1>
-  <p>Near Patan Chowfuli, Shindkheda, Dist - Dhule (MH)</p>
-  <p>📧 shaikhdigital1@gmail.com</p>
-  <p>📞 Vajid Shaikh – 9423494985 | Maksud Shaikh – 9158074459</p>
-</header>
+</div>
 
-<div class="container">
-  <form id="calcForm">
-    <!-- Customer fields -->
-    <div class="form-group">
-      <label for="customerName">Customer Name *</label>
-      <input type="text" id="customerName" required />
-    </div>
-    <div class="form-group">
-      <label for="customerCity">Customer City</label>
-      <input type="text" id="customerCity" />
-    </div>
-    <div class="form-group">
-      <label for="billDate">Date</label>
-      <input type="date" id="billDate" />
-    </div>
-    <div class="form-group">
-      <label for="bannerTitle">Banner Title (Optional)</label>
-      <input type="text" id="bannerTitle" />
-    </div>
-
-    <h3 style="margin: 20px 0;">Banner Details</h3>
-    <div id="bannerContainer"></div>
-
-    <button type="button" class="btn btn-success" onclick="addBanner()">➕ Add Banner</button>
-
-    <div class="form-group">
-      <label>
-        <input type="checkbox" id="isPending" onchange="togglePending()" style="margin-right: 8px;">
-        Is Payment Pending?
-      </label>
-    </div>
-
-    <div id="pendingAmountBox" style="display: none;">
-      <label for="pendingAmount">Pending Amount (₹)</label>
-      <input type="number" id="pendingAmount" min="0" step="0.01" />
-    </div>
-
-    <div id="totalAmount">Total: ₹0.00</div>
-    <div id="totalSqft">Total Sq.ft: 0.00</div>
-
-    <div class="loading" id="loadingDiv">
-      <div class="spinner"></div>
-      <p>Generating Bill...</p>
-    </div>
-
-    <button type="submit" class="btn btn-warning">📄 Generate Bill</button>
-  </form>
-</div>  
+<footer>
+  <div class="footer-content">
+    <p>© 2024–2025 Ammar Shaikh | <a href="mailto:ammarsk200422@gmail.com">ammarsk200422@gmail.com</a></p>
+  </div>
+</footer>
 
 <script>
 // Initialize localStorage with default values if not present
@@ -651,6 +703,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 </script>
+<script src="calculator.js"></script>
 
 </body>
 </html>

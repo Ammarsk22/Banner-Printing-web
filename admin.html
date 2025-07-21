@@ -10,16 +10,15 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.95);
       padding: 40px;
@@ -27,16 +26,22 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
       backdrop-filter: blur(10px);
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
+      margin: 20px;
     }
-
     h2 {
       text-align: center;
       color: #2c3e50;
       margin-bottom: 30px;
       font-size: 28px;
     }
-
+    h3 {
+      color: #2c3e50;
+      margin: 25px 0 15px 0;
+      font-size: 20px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 5px;
+    }
     input, select {
       width: 100%;
       padding: 12px;
@@ -46,13 +51,11 @@
       margin-bottom: 15px;
       transition: all 0.3s ease;
     }
-
-    input:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
-
     button {
       width: 100%;
       padding: 15px;
@@ -66,30 +69,54 @@
       transition: all 0.3s ease;
       margin-bottom: 10px;
     }
-
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-
     .preset-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr auto;
       gap: 10px;
       margin-bottom: 15px;
+      align-items: center;
     }
-
+    .preset-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .preset-controls {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 14px;
+      width: auto;
+      margin: 0;
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    }
+    .btn-warning {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+    .btn-info {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    }
     #loginError {
       color: #e74c3c;
       text-align: center;
       margin-top: 10px;
       font-weight: 600;
     }
-
-    .back-btn {
-      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-
     .success-msg {
       background: #2ecc71;
       color: white;
@@ -99,15 +126,58 @@
       margin-bottom: 20px;
       display: none;
     }
-
+    .date-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .format-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: auto;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      font-size: 14px;
+    }
+    .footer {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 20px;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .footer a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
     @media (max-width: 768px) {
       .container {
-        margin: 20px;
-        padding: 30px;
+        margin: 10px;
+        padding: 20px;
       }
-      
       .preset-row {
         grid-template-columns: 1fr;
+      }
+      .date-range {
+        grid-template-columns: 1fr;
+      }
+      .format-selector {
+        grid-template-columns: 1fr;
+      }
+      .logout-btn {
+        position: static;
+        margin-bottom: 20px;
       }
     }
   </style>
@@ -121,81 +191,57 @@
   </div>
 
   <div class="container" id="adminPanel" style="display: none;">
-    <h2>⚙️ Manage Banner Types & Rates</h2>
-    <div class="success-msg" id="successMsg">✅ Presets saved successfully!</div>
-    <div id="presetForm">
-      <div class="preset-row">
-        <input type="text" id="vinylName" placeholder="Vinyl name" />
-        <input type="number" id="vinylRate" placeholder="Rate ₹" />
-      </div>
-      <div class="preset-row">
-        <input type="text" id="flexName" placeholder="Flex name" />
-        <input type="number" id="flexRate" placeholder="Rate ₹" />
-      </div>
-      <div class="preset-row">
-        <input type="text" id="glowName" placeholder="Glow Sign name" />
-        <input type="number" id="glowRate" placeholder="Rate ₹" />
-      </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    <h2>⚙️ Admin Panel</h2>
+    <div class="success-msg" id="successMsg">✅ Changes saved successfully!</div>
+    
+    <!-- Preset Rates Management -->
+    <h3>📋 Manage Banner Types & Rates</h3>
+    <div id="presetsList"></div>
+    <div class="preset-row">
+      <input type="text" id="newPresetName" placeholder="New preset name" />
+      <input type="number" id="newPresetRate" placeholder="Rate ₹" />
+      <button class="btn-success btn-small" onclick="addNewPreset()">➕ Add</button>
     </div>
-    <button onclick="savePresets()">💾 Save Presets</button>
-    <button class="back-btn" onclick="window.location.href='index.html'">🔙 Back to Home</button>
+
+    <!-- Reports Section -->
+    <h3>📊 Generate Reports</h3>
+    <div class="date-range">
+      <input type="date" id="fromDate" />
+      <input type="date" id="toDate" />
+    </div>
+    <div class="format-selector">
+      <select id="reportFormat">
+        <option value="csv">📄 CSV Format</option>
+        <option value="excel">📊 Excel Format</option>
+      </select>
+      <button class="btn-info btn-small" onclick="generateCustomReport()">📊 Generate Report</button>
+    </div>
+
+    <!-- Action Buttons -->
+    <h3>🔧 Actions</h3>
+    <button onclick="window.location.href='index.html'" class="btn-warning">🔙 Back to Home</button>
+    <button onclick="window.location.href='history.html'" class="btn-info">📋 View Bill History</button>
+    <button onclick="backupBillHistory()" class="btn-secondary">💾 Backup Bill History</button>
   </div>
+
+  <footer class="footer">
+    <p>© 2024–2025 <a href="mailto:ammarsk200422@gmail.com">Ammar Shaikh</a> | ammarsk200422@gmail.com</p>
+  </footer>
 
   <script>
     const password = "Shaikh@2012";
+    const STORAGE_KEYS = {
+      PRESET_RATES: 'shaikhDigital_presetRates',
+      ADMIN_SESSION: 'shaikhDigital_adminSession',
+      BILL_HISTORY: 'shaikhDigital_billHistory'
+    };
 
-    // Default preset rates
     const defaultPresetRates = {
       "Vinyl": 40,
       "Flex": 30,
       "Glow Sign": 50
     };
-
-    // localStorage key constants
-    const STORAGE_KEYS = {
-      PRESET_RATES: 'shaikhDigital_presetRates',
-      ADMIN_SESSION: 'shaikhDigital_adminSession'
-    };
-
-    // Load preset rates from localStorage
-    function loadPresetRates() {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch (e) {
-        console.log("Error loading preset rates from localStorage:", e);
-      }
-      return defaultPresetRates;
-    }
-
-    // Save preset rates to localStorage
-    function savePresetRates(rates) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(rates));
-        return true;
-      } catch (e) {
-        console.log("Error saving preset rates to localStorage:", e);
-        return false;
-      }
-    }
-
-    // Broadcast preset update to other pages
-    function broadcastPresetUpdate(rates) {
-      // Create a custom event to notify other pages
-      const event = new CustomEvent('presetRatesUpdated', {
-        detail: rates
-      });
-      window.dispatchEvent(event);
-      
-      // Also store a timestamp to help other pages detect changes
-      try {
-        localStorage.setItem('shaikhDigital_lastUpdate', Date.now().toString());
-      } catch (e) {
-        console.log("Error saving update timestamp:", e);
-      }
-    }
 
     function checkLogin() {
       const input = document.getElementById("adminPass").value;
@@ -203,101 +249,290 @@
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("adminPanel").style.display = "block";
         loadPresets();
-        
-        // Save admin session
-        try {
-          localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, Date.now().toString());
-        } catch (e) {
-          console.log("Error saving admin session:", e);
-        }
+        setDefaultDateRange();
+        localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, Date.now().toString());
       } else {
         document.getElementById("loginError").style.display = "block";
       }
     }
 
+    function logout() {
+      localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("adminPanel").style.display = "none";
+      document.getElementById("adminPass").value = "";
+    }
+
     function loadPresets() {
-      const presetRates = loadPresetRates();
-      const keys = Object.keys(presetRates);
-
-      document.getElementById("vinylName").value = keys[0] || "Vinyl";
-      document.getElementById("vinylRate").value = presetRates[keys[0]] || 40;
-
-      document.getElementById("flexName").value = keys[1] || "Flex";
-      document.getElementById("flexRate").value = presetRates[keys[1]] || 30;
-
-      document.getElementById("glowName").value = keys[2] || "Glow Sign";
-      document.getElementById("glowRate").value = presetRates[keys[2]] || 50;
+      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
+      
+      const container = document.getElementById("presetsList");
+      container.innerHTML = "";
+      
+      Object.entries(presetRates).forEach(([name, rate]) => {
+        const presetItem = document.createElement("div");
+        presetItem.className = "preset-item";
+        presetItem.innerHTML = `
+          <div class="preset-row">
+            <input type="text" value="${name}" id="preset-name-${name}" />
+            <input type="number" value="${rate}" id="preset-rate-${name}" />
+            <div class="preset-controls">
+              <button class="btn-success btn-small" onclick="updatePreset('${name}')">💾 Save</button>
+              <button class="btn-danger btn-small" onclick="deletePreset('${name}')">🗑️ Delete</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(presetItem);
+      });
     }
 
-    function savePresets() {
-      const vinylName = document.getElementById("vinylName").value.trim() || "Vinyl";
-      const vinylRate = parseFloat(document.getElementById("vinylRate").value) || 40;
+    function addNewPreset() {
+      const name = document.getElementById("newPresetName").value.trim();
+      const rate = parseFloat(document.getElementById("newPresetRate").value);
+      
+      if (!name || !rate || rate <= 0) {
+        alert("Please enter valid preset name and rate!");
+        return;
+      }
+      
+      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
+      
+      presetRates[name] = rate;
+      localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
+      
+      document.getElementById("newPresetName").value = "";
+      document.getElementById("newPresetRate").value = "";
+      
+      showSuccessMessage();
+      loadPresets();
+    }
 
-      const flexName = document.getElementById("flexName").value.trim() || "Flex";
-      const flexRate = parseFloat(document.getElementById("flexRate").value) || 30;
+    function updatePreset(oldName) {
+      const newName = document.getElementById(`preset-name-${oldName}`).value.trim();
+      const newRate = parseFloat(document.getElementById(`preset-rate-${oldName}`).value);
+      
+      if (!newName || !newRate || newRate <= 0) {
+        alert("Please enter valid preset name and rate!");
+        return;
+      }
+      
+      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
+      
+      // Remove old preset if name changed
+      if (oldName !== newName) {
+        delete presetRates[oldName];
+      }
+      
+      presetRates[newName] = newRate;
+      localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
+      
+      showSuccessMessage();
+      loadPresets();
+    }
 
-      const glowName = document.getElementById("glowName").value.trim() || "Glow Sign";
-      const glowRate = parseFloat(document.getElementById("glowRate").value) || 50;
+    function deletePreset(name) {
+      if (confirm(`Are you sure you want to delete "${name}" preset?`)) {
+        const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+        const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
+        
+        delete presetRates[name];
+        localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
+        
+        showSuccessMessage();
+        loadPresets();
+      }
+    }
 
-      const newPresetRates = {};
-      newPresetRates[vinylName] = vinylRate;
-      newPresetRates[flexName] = flexRate;
-      newPresetRates[glowName] = glowRate;
+    function setDefaultDateRange() {
+      const today = new Date();
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      
+      document.getElementById("fromDate").value = firstDayOfMonth.toISOString().split('T')[0];
+      document.getElementById("toDate").value = today.toISOString().split('T')[0];
+    }
 
-      // Save to localStorage
-      if (savePresetRates(newPresetRates)) {
-        // Broadcast the update to other pages
-        broadcastPresetUpdate(newPresetRates);
-
-        // Show success message
-        const successMsg = document.getElementById("successMsg");
-        successMsg.style.display = "block";
-        setTimeout(() => {
-          successMsg.style.display = "none";
-        }, 3000);
+    function generateCustomReport() {
+      const fromDate = document.getElementById("fromDate").value;
+      const toDate = document.getElementById("toDate").value;
+      const format = document.getElementById("reportFormat").value;
+      
+      if (!fromDate || !toDate) {
+        alert("Please select both from and to dates!");
+        return;
+      }
+      
+      if (new Date(fromDate) > new Date(toDate)) {
+        alert("From date cannot be later than to date!");
+        return;
+      }
+      
+      const storedHistory = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
+      if (!storedHistory) {
+        alert("No bill history found!");
+        return;
+      }
+      
+      const billHistory = JSON.parse(storedHistory);
+      
+      // Filter bills by date range
+      const filteredBills = billHistory.filter(bill => {
+        const billDate = new Date(bill.date);
+        return billDate >= new Date(fromDate) && billDate <= new Date(toDate);
+      });
+      
+      if (filteredBills.length === 0) {
+        alert("No bills found in the selected date range!");
+        return;
+      }
+      
+      if (format === 'excel') {
+        generateExcelReport(filteredBills, fromDate, toDate);
       } else {
-        alert("Error saving presets. Please try again.");
+        generateCSVReport(filteredBills, fromDate, toDate);
       }
     }
 
-    // Check if admin is already logged in
-    function checkAdminSession() {
-      try {
-        const session = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
-        if (session) {
-          const sessionTime = parseInt(session);
-          const currentTime = Date.now();
-          // Session valid for 1 hour
-          if (currentTime - sessionTime < 3600000) {
-            document.getElementById("loginBox").style.display = "none";
-            document.getElementById("adminPanel").style.display = "block";
-            loadPresets();
-            return true;
-          } else {
-            // Session expired, remove it
-            localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
-          }
-        }
-      } catch (e) {
-        console.log("Error checking admin session:", e);
-      }
-      return false;
+    function generateCSVReport(bills, fromDate, toDate) {
+      const rows = [
+        ["Bill No", "Date", "Customer", "City", "Title", "Total Sq.ft", "Amount", "Pending"]
+      ];
+
+      let grandTotal = 0;
+      bills.forEach(bill => {
+        rows.push([
+          bill.billNo,
+          bill.date,
+          bill.customerName,
+          bill.customerCity,
+          bill.bannerTitle || "N/A",
+          bill.totalSqft.toFixed(2),
+          bill.totalAmount.toFixed(2),
+          bill.isPending ? `₹${bill.pendingAmount.toFixed(2)}` : "Paid"
+        ]);
+        grandTotal += bill.totalAmount;
+      });
+
+      rows.push([]);
+      rows.push(["", "", "", "", "Grand Total", "", `₹${grandTotal.toFixed(2)}`, ""]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `report_${fromDate}_to_${toDate}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
-    // Initialize on page load
+    function generateExcelReport(bills, fromDate, toDate) {
+      // Create Excel-compatible HTML table
+      let htmlContent = `
+        <table border="1">
+          <tr>
+            <th>Bill No</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>City</th>
+            <th>Title</th>
+            <th>Total Sq.ft</th>
+            <th>Amount</th>
+            <th>Pending</th>
+          </tr>
+      `;
+
+      let grandTotal = 0;
+      bills.forEach(bill => {
+        htmlContent += `
+          <tr>
+            <td>${bill.billNo}</td>
+            <td>${bill.date}</td>
+            <td>${bill.customerName}</td>
+            <td>${bill.customerCity}</td>
+            <td>${bill.bannerTitle || "N/A"}</td>
+            <td>${bill.totalSqft.toFixed(2)}</td>
+            <td>${bill.totalAmount.toFixed(2)}</td>
+            <td>${bill.isPending ? `₹${bill.pendingAmount.toFixed(2)}` : "Paid"}</td>
+          </tr>
+        `;
+        grandTotal += bill.totalAmount;
+      });
+
+      htmlContent += `
+          <tr>
+            <td colspan="6"><strong>Grand Total</strong></td>
+            <td><strong>₹${grandTotal.toFixed(2)}</strong></td>
+            <td></td>
+          </tr>
+        </table>
+      `;
+
+      const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `report_${fromDate}_to_${toDate}.xls`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    }
+
+    function backupBillHistory() {
+      const storedHistory = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
+      if (!storedHistory) {
+        alert("No bill history found!");
+        return;
+      }
+      
+      const billHistory = JSON.parse(storedHistory);
+      const presetRates = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+      
+      const backup = {
+        timestamp: new Date().toISOString(),
+        version: "1.0",
+        billHistory: billHistory,
+        presetRates: presetRates ? JSON.parse(presetRates) : defaultPresetRates
+      };
+      
+      const dataStr = JSON.stringify(backup, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(dataBlob);
+      link.download = `shaikh_digital_backup_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      
+      alert("Backup downloaded successfully!");
+    }
+
+    function showSuccessMessage() {
+      const msg = document.getElementById("successMsg");
+      msg.style.display = "block";
+      setTimeout(() => {
+        msg.style.display = "none";
+      }, 3000);
+    }
+
+    // Auto-login if session exists
     window.addEventListener('DOMContentLoaded', function() {
-      if (!checkAdminSession()) {
-        loadPresets(); // Load presets for display even if not logged in
+      const session = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
+      if (session && Date.now() - parseInt(session) < 3600000) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPresets();
+        setDefaultDateRange();
       }
     });
 
-    // Clear admin session on page unload
+    // Clear session on unload
     window.addEventListener('beforeunload', function() {
-      try {
-        localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
-      } catch (e) {
-        console.log("Error clearing admin session:", e);
-      }
+      localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
     });
   </script>
 </body>
