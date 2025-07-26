@@ -1,539 +1,1119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Panel - Shaikh Digital</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      backdrop-filter: blur(10px);
-      width: 100%;
-      max-width: 600px;
-      margin: 20px;
-    }
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
-      font-size: 28px;
-    }
-    h3 {
-      color: #2c3e50;
-      margin: 25px 0 15px 0;
-      font-size: 20px;
-      border-bottom: 2px solid #667eea;
-      padding-bottom: 5px;
-    }
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e1e8ed;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      transition: all 0.3s ease;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-bottom: 10px;
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .preset-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 10px;
-      margin-bottom: 15px;
-      align-items: center;
-    }
-    .preset-item {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    .preset-controls {
-      display: flex;
-      gap: 10px;
-    }
-    .btn-small {
-      padding: 8px 12px;
-      font-size: 14px;
-      width: auto;
-      margin: 0;
-    }
-    .btn-danger {
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    }
-    .btn-success {
-      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-    }
-    .btn-warning {
-      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-    .btn-info {
-      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    }
-    .btn-secondary {
-      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-    }
-    #loginError {
-      color: #e74c3c;
-      text-align: center;
-      margin-top: 10px;
-      font-weight: 600;
-    }
-    .success-msg {
-      background: #2ecc71;
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      margin-bottom: 20px;
-      display: none;
-    }
-    .date-range {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .format-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: auto;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-      font-size: 14px;
-    }
-    .footer {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.8);
-      margin-top: 20px;
-      padding: 20px;
-      font-size: 14px;
-    }
-    .footer a {
-      color: rgba(255, 255, 255, 0.9);
-      text-decoration: none;
-    }
-    .footer a:hover {
-      text-decoration: underline;
-    }
-    @media (max-width: 768px) {
-      .container {
-        margin: 10px;
-        padding: 20px;
-      }
-      .preset-row {
-        grid-template-columns: 1fr;
-      }
-      .date-range {
-        grid-template-columns: 1fr;
-      }
-      .format-selector {
-        grid-template-columns: 1fr;
-      }
-      .logout-btn {
-        position: static;
-        margin-bottom: 20px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Shaikh Digital & Redium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="password"], input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="password"]:focus, input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+        }
+
+        .btn-info:hover {
+            box-shadow: 0 10px 25px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .preset-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .preset-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .preset-row input {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .preset-row input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: auto;
+            margin: 0;
+        }
+
+        .btn-small:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-add {
+            background: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 40px;
+            font-size: 16px;
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+            transform: translateX(-5px);
+        }
+
+        .admin-notify {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 250px;
+            background: #232946;
+            color: white;
+            font-weight: 600;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-size: 14px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .admin-notify.success {
+            background: #28a745;
+        }
+
+        .admin-notify.error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        input[type="file"].hidden {
+            display: none;
+        }
+
+        .section-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .bond-rate-section {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .bond-rate-section .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 0;
+        }
+
+        .current-rate {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* History Section Styles */
+        .history-search {
+            margin-bottom: 20px;
+        }
+
+        .history-search input {
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .history-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .history-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #138496;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .no-bills {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .bill-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .modal-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .preset-row {
+                flex-direction: column;
+            }
+
+            .preset-row input {
+                min-width: 100%;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bond-rate-section {
+                flex-direction: column;
+            }
+
+            .bond-rate-section .form-group {
+                min-width: 100%;
+            }
+
+            .history-table {
+                font-size: 14px;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 8px;
+            }
+
+            .history-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container" id="loginBox">
-    <h2>🔐 Admin Login</h2>
-    <input type="password" id="adminPass" placeholder="Enter Password" />
-    <button onclick="checkLogin()">Login</button>
-    <p id="loginError" style="display: none;">Incorrect password</p>
-  </div>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Admin Panel</h1>
+            <p>Shaikh Digital & Redium - Banner Printing System</p>
+        </div>
 
-  <div class="container" id="adminPanel" style="display: none;">
-    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-    <h2>⚙️ Admin Panel</h2>
-    <div class="success-msg" id="successMsg">✅ Changes saved successfully!</div>
-    
-    <!-- Preset Rates Management -->
-    <h3>📋 Manage Banner Types & Rates</h3>
-    <div id="presetsList"></div>
-    <div class="preset-row">
-      <input type="text" id="newPresetName" placeholder="New preset name" />
-      <input type="number" id="newPresetRate" placeholder="Rate ₹" />
-      <button class="btn-success btn-small" onclick="addNewPreset()">➕ Add</button>
-    </div>
-
-    <!-- Reports Section -->
-    <h3>📊 Generate Reports</h3>
-    <div class="date-range">
-      <input type="date" id="fromDate" />
-      <input type="date" id="toDate" />
-    </div>
-    <div class="format-selector">
-      <select id="reportFormat">
-        <option value="csv">📄 CSV Format</option>
-        <option value="excel">📊 Excel Format</option>
-      </select>
-      <button class="btn-info btn-small" onclick="generateCustomReport()">📊 Generate Report</button>
-    </div>
-
-    <!-- Action Buttons -->
-    <h3>🔧 Actions</h3>
-    <button onclick="window.location.href='index.html'" class="btn-warning">🔙 Back to Home</button>
-    <button onclick="window.location.href='history.html'" class="btn-info">📋 View Bill History</button>
-    <button onclick="backupBillHistory()" class="btn-secondary">💾 Backup Bill History</button>
-  </div>
-
-  <footer class="footer">
-    <p>© 2024–2025 <a href="mailto:ammarsk200422@gmail.com">Ammar Shaikh</a> | ammarsk200422@gmail.com</p>
-  </footer>
-
-  <script>
-    const password = "Shaikh@2012";
-    const STORAGE_KEYS = {
-      PRESET_RATES: 'shaikhDigital_presetRates',
-      ADMIN_SESSION: 'shaikhDigital_adminSession',
-      BILL_HISTORY: 'shaikhDigital_billHistory'
-    };
-
-    const defaultPresetRates = {
-      "Vinyl": 40,
-      "Flex": 30,
-      "Glow Sign": 50
-    };
-
-    function checkLogin() {
-      const input = document.getElementById("adminPass").value;
-      if (input === password) {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("adminPanel").style.display = "block";
-        loadPresets();
-        setDefaultDateRange();
-        localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, Date.now().toString());
-      } else {
-        document.getElementById("loginError").style.display = "block";
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
-      document.getElementById("loginBox").style.display = "block";
-      document.getElementById("adminPanel").style.display = "none";
-      document.getElementById("adminPass").value = "";
-    }
-
-    function loadPresets() {
-      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
-      
-      const container = document.getElementById("presetsList");
-      container.innerHTML = "";
-      
-      Object.entries(presetRates).forEach(([name, rate]) => {
-        const presetItem = document.createElement("div");
-        presetItem.className = "preset-item";
-        presetItem.innerHTML = `
-          <div class="preset-row">
-            <input type="text" value="${name}" id="preset-name-${name}" />
-            <input type="number" value="${rate}" id="preset-rate-${name}" />
-            <div class="preset-controls">
-              <button class="btn-success btn-small" onclick="updatePreset('${name}')">💾 Save</button>
-              <button class="btn-danger btn-small" onclick="deletePreset('${name}')">🗑️ Delete</button>
+        <div class="content">
+            <!-- Login Form -->
+            <div class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Enter Admin Password:</label>
+                    <input type="password" id="adminPassword" placeholder="Enter password...">
+                </div>
+                <button class="btn" onclick="checkPassword()">🔐 Login</button>
             </div>
-          </div>
-        `;
-        container.appendChild(presetItem);
-      });
-    }
 
-    function addNewPreset() {
-      const name = document.getElementById("newPresetName").value.trim();
-      const rate = parseFloat(document.getElementById("newPresetRate").value);
-      
-      if (!name || !rate || rate <= 0) {
-        alert("Please enter valid preset name and rate!");
-        return;
-      }
-      
-      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
-      
-      presetRates[name] = rate;
-      localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
-      
-      document.getElementById("newPresetName").value = "";
-      document.getElementById("newPresetRate").value = "";
-      
-      showSuccessMessage();
-      loadPresets();
-    }
+            <!-- Admin Panel (Hidden initially) -->
+            <div class="admin-panel" id="adminPanel">
+                
+                <!-- Bill History Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📊 Bill History Management</h2>
+                    
+                    <!-- History Stats -->
+                    <div class="history-stats" id="historyStats">
+                        <!-- Stats will be populated here -->
+                    </div>
 
-    function updatePreset(oldName) {
-      const newName = document.getElementById(`preset-name-${oldName}`).value.trim();
-      const newRate = parseFloat(document.getElementById(`preset-rate-${oldName}`).value);
-      
-      if (!newName || !newRate || newRate <= 0) {
-        alert("Please enter valid preset name and rate!");
-        return;
-      }
-      
-      const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-      const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
-      
-      // Remove old preset if name changed
-      if (oldName !== newName) {
-        delete presetRates[oldName];
-      }
-      
-      presetRates[newName] = newRate;
-      localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
-      
-      showSuccessMessage();
-      loadPresets();
-    }
+                    <!-- Search -->
+                    <div class="history-search">
+                        <input type="text" id="historySearch" placeholder="Search by customer name, bill number, or city..." onkeyup="filterHistory()">
+                    </div>
 
-    function deletePreset(name) {
-      if (confirm(`Are you sure you want to delete "${name}" preset?`)) {
-        const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-        const presetRates = stored ? JSON.parse(stored) : defaultPresetRates;
-        
-        delete presetRates[name];
-        localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presetRates));
-        
-        showSuccessMessage();
-        loadPresets();
-      }
-    }
+                    <!-- History Actions -->
+                    <div class="button-grid">
+                        <button class="btn btn-info" onclick="loadHistory()">🔄 Refresh History</button>
+                        <button class="btn btn-warning" onclick="exportHistoryCSV()">📄 Export as CSV</button>
+                        <button class="btn btn-danger" onclick="clearAllHistory()">🗑️ Clear All History</button>
+                    </div>
 
-    function setDefaultDateRange() {
-      const today = new Date();
-      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      
-      document.getElementById("fromDate").value = firstDayOfMonth.toISOString().split('T')[0];
-      document.getElementById("toDate").value = today.toISOString().split('T')[0];
-    }
+                    <!-- History Table -->
+                    <div style="overflow-x: auto;">
+                        <table class="history-table" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>Bill #</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>City</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- History data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    function generateCustomReport() {
-      const fromDate = document.getElementById("fromDate").value;
-      const toDate = document.getElementById("toDate").value;
-      const format = document.getElementById("reportFormat").value;
-      
-      if (!fromDate || !toDate) {
-        alert("Please select both from and to dates!");
-        return;
-      }
-      
-      if (new Date(fromDate) > new Date(toDate)) {
-        alert("From date cannot be later than to date!");
-        return;
-      }
-      
-      const storedHistory = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
-      if (!storedHistory) {
-        alert("No bill history found!");
-        return;
-      }
-      
-      const billHistory = JSON.parse(storedHistory);
-      
-      // Filter bills by date range
-      const filteredBills = billHistory.filter(bill => {
-        const billDate = new Date(bill.date);
-        return billDate >= new Date(fromDate) && billDate <= new Date(toDate);
-      });
-      
-      if (filteredBills.length === 0) {
-        alert("No bills found in the selected date range!");
-        return;
-      }
-      
-      if (format === 'excel') {
-        generateExcelReport(filteredBills, fromDate, toDate);
-      } else {
-        generateCSVReport(filteredBills, fromDate, toDate);
-      }
-    }
+                <!-- Backup Management Section -->
+                <div class="section-card">
+                    <h2 class="section-title">💾 Backup Management</h2>
+                    <div class="button-grid">
+                        <button class="btn btn-success" onclick="exportBackup()">
+                            📥 Export Backup
+                        </button>
+                        <button class="btn btn-info" onclick="promptImportBackupFile()">
+                            📤 Import from File
+                        </button>
+                        <button class="btn btn-warning" onclick="importFromText()">
+                            📝 Import from Text
+                        </button>
+                    </div>
+                </div>
 
-    function generateCSVReport(bills, fromDate, toDate) {
-      const rows = [
-        ["Bill No", "Date", "Customer", "City", "Title", "Total Sq.ft", "Amount", "Pending"]
-      ];
+                <!-- Bond Rate Management Section -->
+                <div class="section-card">
+                    <h2 class="section-title">💰 Bond Rate Management</h2>
+                    <div class="current-rate" id="currentBondRate">
+                        Current Bond Rate: ₹50 per piece
+                    </div>
+                    <div class="bond-rate-section">
+                        <div class="form-group">
+                            <label for="newBondRate">New Bond Rate (₹):</label>
+                            <input type="number" id="newBondRate" placeholder="Enter new rate..." min="0" step="0.01">
+                        </div>
+                        <button class="btn btn-info" onclick="updateBondRate()" style="width: auto; padding: 15px 25px;">
+                            💰 Update Rate
+                        </button>
+                    </div>
+                </div>
 
-      let grandTotal = 0;
-      bills.forEach(bill => {
-        rows.push([
-          bill.billNo,
-          bill.date,
-          bill.customerName,
-          bill.customerCity,
-          bill.bannerTitle || "N/A",
-          bill.totalSqft.toFixed(2),
-          bill.totalAmount.toFixed(2),
-          bill.isPending ? `₹${bill.pendingAmount.toFixed(2)}` : "Paid"
-        ]);
-        grandTotal += bill.totalAmount;
-      });
+                <!-- Preset Management Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📋 Manage Banner Presets</h2>
+                    
+                    <button class="btn btn-add btn-small" onclick="addPresetRow()">➕ Add New Preset</button>
+                    
+                    <div id="presetContainer">
+                        <!-- Preset items will be populated here -->
+                    </div>
 
-      rows.push([]);
-      rows.push(["", "", "", "", "Grand Total", "", `₹${grandTotal.toFixed(2)}`, ""]);
+                    <button class="btn btn-save" onclick="savePresets()">💾 Save All Changes</button>
+                </div>
 
-      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `report_${fromDate}_to_${toDate}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+                <a href="index.html" class="back-link">← Back to Calculator</a>
+            </div>
+        </div>
+    </div>
 
-    function generateExcelReport(bills, fromDate, toDate) {
-      // Create Excel-compatible HTML table
-      let htmlContent = `
-        <table border="1">
-          <tr>
-            <th>Bill No</th>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>City</th>
-            <th>Title</th>
-            <th>Total Sq.ft</th>
-            <th>Amount</th>
-            <th>Pending</th>
-          </tr>
-      `;
+    <!-- Bill View Modal -->
+    <div class="bill-modal" id="billModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📄 Bill Details</h3>
+                <button class="modal-close" onclick="closeBillModal()">✕</button>
+            </div>
+            <div id="billModalContent">
+                <!-- Bill details will be populated here -->
+            </div>
+        </div>
+    </div>
 
-      let grandTotal = 0;
-      bills.forEach(bill => {
-        htmlContent += `
-          <tr>
-            <td>${bill.billNo}</td>
-            <td>${bill.date}</td>
-            <td>${bill.customerName}</td>
-            <td>${bill.customerCity}</td>
-            <td>${bill.bannerTitle || "N/A"}</td>
-            <td>${bill.totalSqft.toFixed(2)}</td>
-            <td>${bill.totalAmount.toFixed(2)}</td>
-            <td>${bill.isPending ? `₹${bill.pendingAmount.toFixed(2)}` : "Paid"}</td>
-          </tr>
-        `;
-        grandTotal += bill.totalAmount;
-      });
+    <script>
+        // Storage keys
+        const STORAGE_KEYS = {
+            PRESET_RATES: 'shaikhDigital_presetRates',
+            BILL_HISTORY: 'shaikhDigital_billHistory',
+            CURRENT_BILL: 'shaikhDigital_currentBill',
+            LAST_UPDATE: 'shaikhDigital_lastUpdate',
+            BOND_RATE: 'shaikhDigital_bondRate'
+        };
 
-      htmlContent += `
-          <tr>
-            <td colspan="6"><strong>Grand Total</strong></td>
-            <td><strong>₹${grandTotal.toFixed(2)}</strong></td>
-            <td></td>
-          </tr>
-        </table>
-      `;
+        const DEFAULT_BOND_RATE = 50;
+        const ADMIN_PASSWORD = "Shaikh@2012";
 
-      const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `report_${fromDate}_to_${toDate}.xls`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-    }
+        // Default preset rates
+        const defaultPresetRates = {
+            "Flex": 30,
+            "Vinyl": 40,
+            "Glow Sign": 50
+        };
 
-    function backupBillHistory() {
-      const storedHistory = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
-      if (!storedHistory) {
-        alert("No bill history found!");
-        return;
-      }
-      
-      const billHistory = JSON.parse(storedHistory);
-      const presetRates = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
-      
-      const backup = {
-        timestamp: new Date().toISOString(),
-        version: "1.0",
-        billHistory: billHistory,
-        presetRates: presetRates ? JSON.parse(presetRates) : defaultPresetRates
-      };
-      
-      const dataStr = JSON.stringify(backup, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(dataBlob);
-      link.download = `shaikh_digital_backup_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-      
-      alert("Backup downloaded successfully!");
-    }
+        let allBills = [];
 
-    function showSuccessMessage() {
-      const msg = document.getElementById("successMsg");
-      msg.style.display = "block";
-      setTimeout(() => {
-        msg.style.display = "none";
-      }, 3000);
-    }
+        // Notification function
+        function notifyAdmin(msg, type = 'info', time = 3000) {
+            const notification = document.createElement('div');
+            notification.className = `admin-notify ${type}`;
+            notification.textContent = msg;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, time);
+        }
 
-    // Auto-login if session exists
-    window.addEventListener('DOMContentLoaded', function() {
-      const session = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
-      if (session && Date.now() - parseInt(session) < 3600000) {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("adminPanel").style.display = "block";
-        loadPresets();
-        setDefaultDateRange();
-      }
-    });
+        // Password check
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadPresets();
+                updateBondRateDisplay();
+                loadHistory();
+                notifyAdmin('Login successful!', 'success');
+            } else {
+                notifyAdmin('Invalid password!', 'error');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
 
-    // Clear session on unload
-    window.addEventListener('beforeunload', function() {
-      localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
-    });
-  </script>
+        // Enter key support for password
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
+
+        // Bond rate functions
+        function getBondRate() {
+            const rate = parseFloat(localStorage.getItem(STORAGE_KEYS.BOND_RATE));
+            if (rate && !isNaN(rate)) return rate;
+            localStorage.setItem(STORAGE_KEYS.BOND_RATE, DEFAULT_BOND_RATE);
+            return DEFAULT_BOND_RATE;
+        }
+
+        function setBondRate(rate) {
+            localStorage.setItem(STORAGE_KEYS.BOND_RATE, rate);
+            updateBondRateDisplay();
+            notifyAdmin(`Bond rate updated: ₹${rate}`, 'success');
+        }
+
+        function updateBondRateDisplay() {
+            const currentRate = getBondRate();
+            document.getElementById('currentBondRate').textContent = `Current Bond Rate: ₹${currentRate} per piece`;
+        }
+
+        function updateBondRate() {
+            const newRate = parseFloat(document.getElementById('newBondRate').value);
+            if (isNaN(newRate) || newRate < 0) {
+                notifyAdmin('Please enter a valid rate!', 'error');
+                return;
+            }
+            setBondRate(newRate);
+            document.getElementById('newBondRate').value = '';
+        }
+
+        // History functions
+        function loadBillHistory() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEYS.BILL_HISTORY);
+                if (stored) return JSON.parse(stored);
+            } catch (e) {
+                console.warn('Error loading bill history:', e);
+            }
+            return [];
+        }
+
+        function loadHistory() {
+            allBills = loadBillHistory();
+            displayHistoryStats();
+            displayHistory(allBills);
+        }
+
+        function displayHistoryStats() {
+            const statsContainer = document.getElementById('historyStats');
+            const totalBills = allBills.length;
+            const totalAmount = allBills.reduce((sum, bill) => sum + (bill.totalAmount || 0), 0);
+            const pendingBills = allBills.filter(bill => bill.isPending).length;
+            const totalSqft = allBills.reduce((sum, bill) => sum + (bill.totalSqft || 0), 0);
+
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalBills}</div>
+                    <div class="stat-label">Total Bills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹${totalAmount.toFixed(0)}</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${pendingBills}</div>
+                    <div class="stat-label">Pending Bills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalSqft.toFixed(0)}</div>
+                    <div class="stat-label">Total Sq.ft</div>
+                </div>
+            `;
+        }
+
+        function displayHistory(bills) {
+            const tbody = document.getElementById('historyTableBody');
+            
+            if (bills.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-bills">No bills found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = bills.map(bill => `
+                <tr>
+                    <td><strong>#${bill.billNo}</strong></td>
+                    <td>${bill.date || 'N/A'}</td>
+                    <td>${bill.customerName || 'N/A'}</td>
+                    <td>${bill.customerCity || 'N/A'}</td>
+                    <td><strong>₹${(bill.totalAmount || 0).toFixed(2)}</strong></td>
+                    <td>
+                        <span style="color: ${bill.isPending ? '#dc3545' : '#28a745'}; font-weight: bold;">
+                            ${bill.isPending ? 'Pending' : 'Paid'}
+                        </span>
+                    </td>
+                    <td class="history-actions">
+                        <button class="btn-view" onclick="viewBill(${bill.billNo})">👁️ View</button>
+                        <button class="btn-delete" onclick="deleteBill(${bill.billNo})">🗑️ Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterHistory() {
+            const searchTerm = document.getElementById('historySearch').value.toLowerCase();
+            const filteredBills = allBills.filter(bill => 
+                (bill.customerName || '').toLowerCase().includes(searchTerm) ||
+                (bill.customerCity || '').toLowerCase().includes(searchTerm) ||
+                (bill.billNo || '').toString().includes(searchTerm)
+            );
+            displayHistory(filteredBills);
+        }
+
+        function viewBill(billNo) {
+            const bill = allBills.find(b => b.billNo == billNo);
+            if (!bill) {
+                notifyAdmin('Bill not found!', 'error');
+                return;
+            }
+
+            const modalContent = document.getElementById('billModalContent');
+            modalContent.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4>Bill #${bill.billNo}</h4>
+                    <p><strong>Date:</strong> ${bill.date || 'N/A'}</p>
+                    <p><strong>Customer:</strong> ${bill.customerName || 'N/A'}</p>
+                    <p><strong>City:</strong> ${bill.customerCity || 'N/A'}</p>
+                    <p><strong>Banner Title:</strong> ${bill.bannerTitle || 'N/A'}</p>
+                    <p><strong>Status:</strong> <span style="color: ${bill.isPending ? '#dc3545' : '#28a745'};">${bill.isPending ? 'Pending' : 'Paid'}</span></p>
+                </div>
+                
+                <h5>Banner Details:</h5>
+                <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 8px; border: 1px solid #ddd;">Banner</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Size</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Qty</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Rate</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Bond</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${(bill.banners || []).map(banner => `
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">${banner.name || 'Banner'}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">${banner.height}×${banner.width} ft</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">${banner.qty}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">₹${banner.rate}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">${banner.bondQty || 0}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;"><strong>₹${(banner.amount || 0).toFixed(2)}</strong></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
+                    <p><strong>Total Amount: ₹${(bill.totalAmount || 0).toFixed(2)}</strong></p>
+                    <p><strong>Total Sq.ft: ${(bill.totalSqft || 0).toFixed(2)}</strong></p>
+                    ${bill.isPending ? `<p><strong>Pending Amount: ₹${(bill.pendingAmount || 0).toFixed(2)}</strong></p>` : ''}
+                </div>
+            `;
+
+            document.getElementById('billModal').style.display = 'block';
+        }
+
+        function closeBillModal() {
+            document.getElementById('billModal').style.display = 'none';
+        }
+
+        function deleteBill(billNo) {
+            if (!confirm(`Are you sure you want to delete Bill #${billNo}? This action cannot be undone.`)) {
+                return;
+            }
+
+            allBills = allBills.filter(bill => bill.billNo != billNo);
+            
+            try {
+                localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify(allBills));
+                notifyAdmin(`Bill #${billNo} deleted successfully!`, 'success');
+                loadHistory();
+            } catch (e) {
+                notifyAdmin('Error deleting bill!', 'error');
+            }
+        }
+
+        function clearAllHistory() {
+            if (!confirm('Are you sure you want to clear ALL history? This action cannot be undone!')) {
+                return;
+            }
+
+            localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, JSON.stringify([]));
+            allBills = [];
+            loadHistory();
+            notifyAdmin('All history cleared!', 'success');
+        }
+
+        function exportHistoryCSV() {
+            if (allBills.length === 0) {
+                notifyAdmin('No bills to export!', 'error');
+                return;
+            }
+
+            const csvContent = [
+                ['Bill No', 'Date', 'Customer', 'City', 'Banner Title', 'Total Amount', 'Total Sq.ft', 'Status', 'Pending Amount'].join(','),
+                ...allBills.map(bill => [
+                    bill.billNo,
+                    bill.date || '',
+                    `"${bill.customerName || ''}"`,
+                    `"${bill.customerCity || ''}"`,
+                    `"${bill.bannerTitle || ''}"`,
+                    bill.totalAmount || 0,
+                    bill.totalSqft || 0,
+                    bill.isPending ? 'Pending' : 'Paid',
+                    bill.pendingAmount || 0
+                ].join(','))
+            ].join('\n');
+
+            const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+            const downloadLink = document.createElement('a');
+            downloadLink.setAttribute("href", dataStr);
+            downloadLink.setAttribute("download", `Bills_History_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.remove();
+            notifyAdmin('History exported as CSV!', 'success');
+        }
+
+        // Backup functions
+        function exportBackup() {
+            const backup = {
+                BILL_HISTORY: localStorage.getItem(STORAGE_KEYS.BILL_HISTORY),
+                PRESET_RATES: localStorage.getItem(STORAGE_KEYS.PRESET_RATES),
+                BOND_RATE: localStorage.getItem(STORAGE_KEYS.BOND_RATE),
+                EXPORT_DATE: new Date().toISOString()
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const downloadLink = document.createElement('a');
+            downloadLink.setAttribute("href", dataStr);
+            downloadLink.setAttribute("download", `ShaikhDigital_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.remove();
+            notifyAdmin("Backup exported successfully!", "success");
+        }
+
+        function importBackup(jsonOrFile) {
+            if (jsonOrFile instanceof File) {
+                const reader = new FileReader();
+                reader.onload = (e) => processImportBackup(e.target.result);
+                reader.readAsText(jsonOrFile);
+            } else {
+                processImportBackup(jsonOrFile);
+            }
+
+            function processImportBackup(jsonString) {
+                try {
+                    const backup = JSON.parse(jsonString);
+                    let imported = [];
+                    
+                    if (backup.BILL_HISTORY) {
+                        localStorage.setItem(STORAGE_KEYS.BILL_HISTORY, backup.BILL_HISTORY);
+                        imported.push('Bill History');
+                    }
+                    if (backup.PRESET_RATES) {
+                        localStorage.setItem(STORAGE_KEYS.PRESET_RATES, backup.PRESET_RATES);
+                        imported.push('Preset Rates');
+                    }
+                    if (backup.BOND_RATE) {
+                        localStorage.setItem(STORAGE_KEYS.BOND_RATE, backup.BOND_RATE);
+                        imported.push('Bond Rate');
+                        updateBondRateDisplay();
+                    }
+                    
+                    notifyAdmin(`Backup imported! (${imported.join(', ')})`, "success");
+                    loadPresets();
+                    loadHistory();
+                } catch (e) {
+                    notifyAdmin("Invalid backup file/JSON!", "error");
+                }
+            }
+        }
+
+        function promptImportBackupFile() {
+            const fileInput = document.createElement('input');
+            fileInput.type = "file";
+            fileInput.accept = ".json,application/json";
+            fileInput.className = "hidden";
+            fileInput.onchange = (e) => {
+                if (fileInput.files && fileInput.files[0]) {
+                    importBackup(fileInput.files[0]);
+                }
+            };
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            setTimeout(() => fileInput.remove(), 3000);
+        }
+
+        function importFromText() {
+            const jsonText = prompt('Paste your backup JSON here:');
+            if (jsonText && jsonText.trim()) {
+                importBackup(jsonText);
+            } else {
+                notifyAdmin('No data provided!', 'error');
+            }
+        }
+
+        // Export to global scope for backward compatibility
+        window.getBondRate = getBondRate;
+        window.setBondRate = setBondRate;
+        window.exportBackup = exportBackup;
+        window.importBackup = importBackup;
+        window.promptImportBackupFile = promptImportBackupFile;
+
+        // Preset management functions
+        function loadPresetRates() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEYS.PRESET_RATES);
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch (e) {
+                console.warn('Error loading preset rates:', e);
+            }
+            localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(defaultPresetRates));
+            return defaultPresetRates;
+        }
+
+        function savePresetRates(presets) {
+            try {
+                localStorage.setItem(STORAGE_KEYS.PRESET_RATES, JSON.stringify(presets));
+                return true;
+            } catch (e) {
+                console.error('Error saving preset rates:', e);
+                return false;
+            }
+        }
+
+        function loadPresets() {
+            const presets = loadPresetRates();
+            const container = document.getElementById('presetContainer');
+            container.innerHTML = '';
+
+            Object.entries(presets).forEach(([name, rate]) => {
+                addPresetRow(name, rate);
+            });
+        }
+
+        function addPresetRow(name = '', rate = '') {
+            const container = document.getElementById('presetContainer');
+            const presetItem = document.createElement('div');
+            presetItem.className = 'preset-item';
+            
+            presetItem.innerHTML = `
+                <div class="preset-row">
+                    <input type="text" placeholder="Banner Type (e.g., Flex)" value="${name}" class="preset-name">
+                    <input type="number" placeholder="Rate per sq.ft (₹)" value="${rate}" class="preset-rate" min="0" step="0.01">
+                    <button class="btn-small" onclick="removePresetRow(this)">🗑️ Remove</button>
+                </div>
+            `;
+            
+            container.appendChild(presetItem);
+        }
+
+        function removePresetRow(button) {
+            button.closest('.preset-item').remove();
+        }
+
+        function savePresets() {
+            const presetItems = document.querySelectorAll('.preset-item');
+            const newPresets = {};
+            
+            let hasError = false;
+            
+            presetItems.forEach(item => {
+                const name = item.querySelector('.preset-name').value.trim();
+                const rate = parseFloat(item.querySelector('.preset-rate').value);
+                
+                if (name && !isNaN(rate) && rate >= 0) {
+                    newPresets[name] = rate;
+                } else if (name || item.querySelector('.preset-rate').value) {
+                    hasError = true;
+                }
+            });
+            
+            if (hasError) {
+                notifyAdmin('Please fill all fields correctly or remove empty rows!', 'error');
+                return;
+            }
+            
+            if (Object.keys(newPresets).length === 0) {
+                notifyAdmin('Please add at least one preset!', 'error');
+                return;
+            }
+            
+            if (savePresetRates(newPresets)) {
+                notifyAdmin('Presets saved successfully!', 'success');
+            } else {
+                notifyAdmin('Error saving presets!', 'error');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('billModal');
+            if (event.target == modal) {
+                closeBillModal();
+            }
+        }
+
+        // Initialize localStorage test
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+        } catch (e) {
+            notifyAdmin('Warning: Local storage not available!', 'error');
+        }
+    </script>
 </body>
 </html>
