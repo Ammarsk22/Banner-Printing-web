@@ -56,7 +56,7 @@ This tool is designed for easy, automated bill calculation: handling banner size
 
 | Bill Preview |
 |-----------------|
-| ![Bill Preview]<img width="1920" height="1084" alt="image" src="https://github.com/user-attachments/assets/c7c1123b-1f52-408f-80eb-28a9f97a534a" /> |
+| <img width="1920" height="1084" alt="image" src="https://github.com/user-attachments/assets/c7c1123b-1f52-408f-80eb-28a9f97a534a" /> |
 
 ---
 
